@@ -1,0 +1,2 @@
+import { AdminShell } from "@/components/AdminShell";
+export default function Page(){return <AdminShell><h1 className="pageTitle">자료관리</h1><p className="subText">Google Drive, 논문, 학술자료, 현재 출판된 도서, 업데이트 날짜를 관리합니다.</p><div className="formCard"><p>토스 승인 전까지 구조를 먼저 완성하고, 승인 후 실제 기능을 연결합니다.</p></div></AdminShell>}

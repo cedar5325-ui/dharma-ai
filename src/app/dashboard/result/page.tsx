@@ -1,0 +1,2 @@
+import { AppShell } from "@/components/AppShell";import { TrustIndex } from "@/components/TrustIndex";
+export default function Result(){return <AppShell><h1 className="pageTitle">보고서 결과</h1><p className="subText">DHARMA VERIFIED™ 인증과 DHARMA TRUST INDEX™가 함께 제공됩니다.</p><TrustIndex/><div className="formCard"><h2>생성 근거 요약</h2><p>✓ 실제 논문 기반 분석 완료</p><p>✓ 최신 연구 동향 반영</p><p>✓ 교육과정·진로 연계 완료</p><p>✓ 독창적 재구성 완료</p><p>✓ Google Drive 자료는 참고자료로만 분석</p></div></AppShell>}

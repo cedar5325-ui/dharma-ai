@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+<defs><linearGradient id="g" x1="18" y1="16" x2="160" y2="166"><stop stop-color="#0B63D8"/><stop offset="1" stop-color="#061D3B"/></linearGradient></defs>
+<rect width="180" height="180" rx="44" fill="url(#g)"/>
+<circle cx="90" cy="80" r="54" fill="white" opacity=".96"/>
+<path d="M52 81c18-34 58-34 76 0-18 34-58 34-76 0Z" fill="#0B63D8"/>
+<circle cx="90" cy="81" r="16" fill="#061D3B"/>
+<circle cx="90" cy="81" r="6" fill="#C9A54B"/>
+<text x="90" y="150" text-anchor="middle" font-family="Arial" font-size="17" font-weight="800" fill="#C9A54B">DHARMA</text>
+</svg>

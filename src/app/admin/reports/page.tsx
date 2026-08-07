@@ -1,0 +1,2 @@
+import { AdminShell } from "@/components/AdminShell";
+export default function Page(){return <AdminShell><h1 className="pageTitle">보고서관리</h1><p className="subText">생성된 보고서, DHARMA TRUST INDEX™, 다운로드 이력을 확인합니다.</p><div className="formCard"><p>토스 승인 전까지 구조를 먼저 완성하고, 승인 후 실제 기능을 연결합니다.</p></div></AdminShell>}

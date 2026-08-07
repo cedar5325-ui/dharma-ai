@@ -1,0 +1,2 @@
+import { AppShell } from "@/components/AppShell";import { reportSections } from "@/data/site";
+export default function Report(){return <AppShell><h1 className="pageTitle">보고서 생성</h1><p className="subText">자료 검증 → 핵심 개념 분석 → 교육과정 연결 → 진로 분석 → 논리 재구성 → 보고서 생성 순서로 진행됩니다.</p><div className="reportPreview">{reportSections.map((s)=><div className="reportSection" key={s}><h3>{s}</h3><p>선택한 주제와 학생 정보에 맞추어 작성될 영역입니다.</p></div>)}</div><a className="primaryButton" style={{marginTop:20}} href="/dashboard/result">DHARMA VERIFIED 결과 보기</a></AppShell>}

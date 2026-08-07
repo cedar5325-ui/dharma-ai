@@ -1,0 +1,2 @@
+import { AppShell } from "@/components/AppShell";
+export default function Profile(){return <AppShell><h1 className="pageTitle">학생정보 입력</h1><p className="subText">보고서 생성을 위한 기초정보를 입력하세요.</p><div className="formCard formGrid">{["학교 유형","학년","과목","희망학과","진로","관심분야"].map((label)=><label key={label}>{label}<input className="input" placeholder={label+" 입력"} /></label>)}</div><a className="primaryButton" style={{marginTop:20}} href="/dashboard/topics">주제 추천 받기</a></AppShell>}

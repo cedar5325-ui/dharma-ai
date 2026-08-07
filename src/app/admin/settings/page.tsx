@@ -1,0 +1,2 @@
+import { AdminShell } from "@/components/AdminShell";
+export default function Page(){return <AdminShell><h1 className="pageTitle">설정</h1><p className="subText">사업자 정보, 고객센터, 자료 업데이트 날짜, 요금 정보를 수정합니다.</p><div className="formCard"><p>토스 승인 전까지 구조를 먼저 완성하고, 승인 후 실제 기능을 연결합니다.</p></div></AdminShell>}

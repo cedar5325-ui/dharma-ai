@@ -1,0 +1,2 @@
+import { AdminShell } from "@/components/AdminShell";
+export default function Page(){return <AdminShell><h1 className="pageTitle">회원관리</h1><p className="subText">회원 정보, 구독 상태, 최근 로그인 정보를 관리합니다.</p><div className="formCard"><p>토스 승인 전까지 구조를 먼저 완성하고, 승인 후 실제 기능을 연결합니다.</p></div></AdminShell>}

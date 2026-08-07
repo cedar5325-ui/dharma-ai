@@ -1,0 +1,2 @@
+import { AdminShell } from "@/components/AdminShell";
+export default function Page(){return <AdminShell><h1 className="pageTitle">통계</h1><p className="subText">과목별 이용, 진로별 주제, 보고서 생성량, 자료 활용 빈도를 확인합니다.</p><div className="formCard"><p>토스 승인 전까지 구조를 먼저 완성하고, 승인 후 실제 기능을 연결합니다.</p></div></AdminShell>}
