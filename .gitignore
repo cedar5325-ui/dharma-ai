@@ -5,3 +5,5 @@
 .env.*.local
 *.log
 .DS_Store
+
+.dharma
