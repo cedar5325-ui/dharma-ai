@@ -27,6 +27,23 @@ function TopNav() {
   );
 }
 
+function BusinessFooter() {
+  return (
+    <footer className="businessFooter">
+      <div>
+        <strong>다르마(DHARMA) AI</strong>
+        <p>사업자명: 다르마(DHARMA) AI</p>
+      </div>
+      <div className="footerLinks">
+        <a href="/pricing">요금</a>
+        <a href="/refund">환불규정</a>
+        <a href="/terms">이용약관</a>
+        <a href="/privacy">개인정보처리방침</a>
+      </div>
+    </footer>
+  );
+}
+
 const styleBlock = (
   <style>{`
     * { box-sizing: border-box; }
@@ -200,6 +217,38 @@ const styleBlock = (
       font-weight: 950;
       box-shadow: 0 18px 42px rgba(17,101,232,.24);
     }
+
+    .businessFooter {
+      max-width: 1400px;
+      margin: 38px auto 0;
+      padding: 30px 6vw 10px;
+      border-top: 1px solid #d8e7ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .businessFooter strong {
+      display: block;
+      font-size: 21px;
+      color: #07152f;
+    }
+    .businessFooter p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: #536985;
+    }
+    .footerLinks {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footerLinks a {
+      color: #30496e;
+      text-decoration: none;
+      font-weight: 900;
+    }
     @media (max-width: 900px) {
       .grid, .grid3 {
         grid-template-columns: 1fr;
@@ -221,17 +270,17 @@ export default function PricingPage() {
       <TopNav />
       <PageHeader
         eyebrow="DHARMA PRICING"
-        title="자료 다운로드 요금 안내"
-        description="다르마는 월 구독이 아니라 필요한 원문 자료를 1건씩 선택해 결제하는 방식으로 운영합니다."
+        title="건별 결제 요금 안내"
+        description="월 구독·정기결제·자동갱신 없이 필요한 자료를 1건씩 선택해 결제합니다."
       />
 
       <section className="section">
         <div className="grid">
           <article className="card">
             <div className="badge">STANDARD</div>
-            <h2>일반 탐구 자료</h2>
+            <h2>일반 탐구보고서</h2>
             <div className="price">20,000원</div>
-            <p>교과 연계 탐구, 도서 연계 탐구, 교육과정 기반 심화 탐구 자료를 1건 단위로 다운로드합니다.</p>
+            <p>교과 연계 탐구, 도서 연계 탐구, 교육과정 기반 심화 탐구보고서를 1건 단위로 이용합니다.</p>
             <ul>
               <li>HWP/HWPX/DOCX/PDF 원문 파일 다운로드</li>
               <li>교과 개념과 탐구 주제 연계</li>
@@ -264,9 +313,9 @@ export default function PricingPage() {
             </thead>
             <tbody>
               <tr>
-                <td>일반 자료</td>
+                <td>일반 탐구보고서</td>
                 <td>20,000원</td>
-                <td>파일명 또는 제목에 ‘소논문’이 포함되지 않은 일반 탐구 자료</td>
+                <td>파일명 또는 제목에 ‘소논문’이 포함되지 않은 일반 탐구보고서 자료</td>
               </tr>
               <tr>
                 <td>소논문 자료</td>
@@ -276,11 +325,12 @@ export default function PricingPage() {
             </tbody>
           </table>
           <div className="notice">
-            결제 완료 후 해당 자료 1건에 대한 다운로드 권한이 부여됩니다.
+            월 구독과 자동결제는 없습니다. 결제 완료 후 선택한 자료 1건에 대한 다운로드 권한이 부여됩니다.
           </div>
           <a className="cta" href="/materials">자료 선택하러 가기</a>
         </article>
       </section>
+      <BusinessFooter />
       {styleBlock}
     </main>
   );

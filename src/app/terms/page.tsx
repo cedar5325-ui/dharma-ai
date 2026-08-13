@@ -27,6 +27,23 @@ function TopNav() {
   );
 }
 
+function BusinessFooter() {
+  return (
+    <footer className="businessFooter">
+      <div>
+        <strong>다르마(DHARMA) AI</strong>
+        <p>사업자명: 다르마(DHARMA) AI</p>
+      </div>
+      <div className="footerLinks">
+        <a href="/pricing">요금</a>
+        <a href="/refund">환불규정</a>
+        <a href="/terms">이용약관</a>
+        <a href="/privacy">개인정보처리방침</a>
+      </div>
+    </footer>
+  );
+}
+
 const styleBlock = (
   <style>{`
     * { box-sizing: border-box; }
@@ -200,6 +217,38 @@ const styleBlock = (
       font-weight: 950;
       box-shadow: 0 18px 42px rgba(17,101,232,.24);
     }
+
+    .businessFooter {
+      max-width: 1400px;
+      margin: 38px auto 0;
+      padding: 30px 6vw 10px;
+      border-top: 1px solid #d8e7ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .businessFooter strong {
+      display: block;
+      font-size: 21px;
+      color: #07152f;
+    }
+    .businessFooter p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: #536985;
+    }
+    .footerLinks {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footerLinks a {
+      color: #30496e;
+      text-decoration: none;
+      font-weight: 900;
+    }
     @media (max-width: 900px) {
       .grid, .grid3 {
         grid-template-columns: 1fr;
@@ -228,7 +277,7 @@ export default function TermsPage() {
       <section className="section">
         <article className="card">
           <h2>서비스 목적</h2>
-          <p>다르마는 교과 연계 탐구, 도서 연계 탐구, 고등학교 교육과정 기반 심화 탐구에 활용할 수 있는 원문 자료 다운로드 서비스를 제공합니다.</p>
+          <p>다르마(DHARMA) AI는 교과 연계 탐구, 도서 연계 탐구, 고등학교 교육과정 기반 심화 탐구에 활용할 수 있는 원문 자료 다운로드 서비스를 제공합니다.</p>
           <p>제공 자료는 학생의 탐구 방향 설정, 참고, 학습, 보고서 구성 이해를 돕기 위한 자료입니다.</p>
         </article>
 
@@ -245,8 +294,9 @@ export default function TermsPage() {
         <article className="card">
           <h2>결제 및 다운로드</h2>
           <ul>
-            <li>일반 자료는 1건당 20,000원입니다.</li>
-            <li>파일명 또는 제목에 ‘소논문’이 포함된 자료는 1건당 50,000원입니다.</li>
+            <li>일반 탐구보고서는 1건당 20,000원입니다.</li>
+            <li>소논문은 1건당 50,000원입니다.</li>
+            <li>월 구독, 정기결제, 자동갱신은 운영하지 않습니다.</li>
             <li>결제 완료 후 해당 자료 1건의 다운로드 권한이 부여됩니다.</li>
             <li>파일 오류가 있는 경우 고객센터 문자 연락을 통해 확인을 요청할 수 있습니다.</li>
           </ul>
@@ -254,10 +304,11 @@ export default function TermsPage() {
 
         <article className="card">
           <h2>책임 제한</h2>
-          <p>다르마는 자료의 품질과 파일 제공을 위해 검토 절차를 운영하지만, 자료 활용 결과나 학교별 평가 결과를 보장하지 않습니다.</p>
+          <p>다르마(DHARMA) AI는 자료의 품질과 파일 제공을 위해 검토 절차를 운영하지만, 자료 활용 결과나 학교별 평가 결과를 보장하지 않습니다.</p>
           <p>자료는 참고용이며, 최종 탐구 결과물은 사용자가 자신의 이해와 표현으로 재구성해야 합니다.</p>
         </article>
       </section>
+      <BusinessFooter />
       {styleBlock}
     </main>
   );

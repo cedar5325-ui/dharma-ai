@@ -1,5 +1,149 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+const FALLBACK_LAST_UPGRADE_AT = "2026-08-13T03:01:56+09:00";
+
+type UploadClockPayload = {
+  lastUploadAt?: unknown;
+  source?: unknown;
+};
+
+function formatKstDateTime(value: string) {
+  const parsed = new Date(value);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return { date: "----.--.--", time: "--:--:--" };
+  }
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(parsed);
+
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value || "00";
+
+  return {
+    date: `${get("year")}.${get("month")}.${get("day")}`,
+    time: `${get("hour")}:${get("minute")}:${get("second")}`,
+  };
+}
+
+function isLiveMaterialSource(source: string) {
+  return (
+    source.startsWith("status:") ||
+    source.startsWith("material:") ||
+    source === "materials-api"
+  );
+}
+
+function DigitalUpgradeClock() {
+  const fallback =
+    process.env.NEXT_PUBLIC_DHARMA_LAST_UPGRADE_AT ||
+    FALLBACK_LAST_UPGRADE_AT;
+  const [raw, setRaw] = useState(fallback);
+  const [source, setSource] = useState("loading");
+
+  useEffect(() => {
+    let active = true;
+
+    const syncLatestUploadTime = async () => {
+      try {
+        const response = await fetch(
+          `/api/system/latest-material-upload?_=${Date.now()}`,
+          { cache: "no-store" },
+        );
+
+        if (!response.ok) {
+          throw new Error(`upload clock request failed: ${response.status}`);
+        }
+
+        const payload = (await response.json()) as UploadClockPayload;
+        const candidate =
+          typeof payload.lastUploadAt === "string"
+            ? payload.lastUploadAt
+            : "";
+        const parsed = new Date(candidate);
+
+        if (!candidate || Number.isNaN(parsed.getTime())) {
+          throw new Error("upload clock timestamp is missing");
+        }
+
+        if (active) {
+          setRaw(candidate);
+          setSource(
+            typeof payload.source === "string"
+              ? payload.source
+              : "materials-api",
+          );
+        }
+      } catch {
+        if (active) {
+          setSource("environment-fallback");
+        }
+      }
+    };
+
+    const handleFocus = () => {
+      void syncLatestUploadTime();
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void syncLatestUploadTime();
+      }
+    };
+
+    void syncLatestUploadTime();
+    const timer = window.setInterval(syncLatestUploadTime, 15_000);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+    };
+  }, []);
+
+  const display = formatKstDateTime(raw);
+  const live = isLiveMaterialSource(source);
+  const statusText =
+    source === "loading"
+      ? "CHECKING LATEST MATERIAL UPLOAD"
+      : live
+        ? "DHARMA MATERIAL UPLOAD SYNCED"
+        : "FALLBACK TIME · MATERIAL DATA NOT FOUND";
+
+  return (
+    <aside
+      className="upgradeClock"
+      aria-label="다르마 자료의 마지막 업로드 시각"
+    >
+      <div className="upgradeClockTop">
+        <span className="upgradeDot" aria-hidden="true" />
+        <span>LAST MATERIAL UPLOAD</span>
+      </div>
+      <time className="upgradeDigits" dateTime={raw}>
+        <span className="upgradeDate">{display.date}</span>
+        <span className="upgradeTime">{display.time}</span>
+        <span className="upgradeZone">KST</span>
+      </time>
+      <small>{statusText}</small>
+    </aside>
+  );
+}
+
 export default function HomePage() {
   return (
     <main className="page">
@@ -16,7 +160,10 @@ export default function HomePage() {
       <section className="hero">
         <div className="heroTop">
           <div className="eyebrow">DHARMA VERIFIED MATERIALS</div>
-          <div className="verifiedBadge">교차 검증 완료</div>
+          <div className="heroStatus">
+            <DigitalUpgradeClock />
+            <div className="verifiedBadge">교차 검증 완료</div>
+          </div>
         </div>
 
         <h1>
@@ -54,6 +201,32 @@ export default function HomePage() {
             <p>고등학교 교육과정에 충실하면서 진로와 과목 심화 역량이 드러나도록 설계합니다.</p>
           </article>
         </div>
+      </section>
+
+      <section className="pricingBand" aria-labelledby="one-time-pricing-title">
+        <div className="pricingIntro">
+          <small>ONE-TIME PAYMENT ONLY</small>
+          <h2 id="one-time-pricing-title">월 구독 없이, 필요한 보고서만 건별 결제</h2>
+          <p>정기결제와 자동갱신 없이 선택한 자료 1건만 결제합니다.</p>
+        </div>
+
+        <div className="priceGrid">
+          <article className="priceCard">
+            <span>STANDARD REPORT</span>
+            <h3>일반 탐구보고서</h3>
+            <strong>20,000원</strong>
+            <p>1건 · 일회성 결제</p>
+          </article>
+
+          <article className="priceCard premiumPriceCard">
+            <span>MINI PAPER</span>
+            <h3>소논문</h3>
+            <strong>50,000원</strong>
+            <p>1건 · 일회성 결제</p>
+          </article>
+        </div>
+
+        <a className="pricingCta" href="/pricing">건별 요금 자세히 보기</a>
       </section>
 
       <section className="cycleSection">
@@ -114,6 +287,19 @@ export default function HomePage() {
           <p>원본 파일 제공 요청은 자료 사용 예정일 기준 최소 3일 전까지 문자로 접수해 주세요.</p>
         </div>
       </section>
+
+      <footer className="businessFooter">
+        <div>
+          <strong>다르마(DHARMA) AI</strong>
+          <p>사업자명: 다르마(DHARMA) AI</p>
+        </div>
+        <div className="footerLinks">
+          <a href="/pricing">요금</a>
+          <a href="/refund">환불규정</a>
+          <a href="/terms">이용약관</a>
+          <a href="/privacy">개인정보처리방침</a>
+        </div>
+      </footer>
 
       <style>{`
         * {
@@ -184,6 +370,89 @@ export default function HomePage() {
           letter-spacing: 4px;
           font-size: 18px;
           margin-bottom: 22px;
+        }
+
+        .heroStatus {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+
+        .upgradeClock {
+          min-width: 330px;
+          padding: 18px 22px;
+          border-radius: 24px;
+          background: linear-gradient(145deg, #031126 0%, #0b2d5e 100%);
+          color: #dff5ff;
+          border: 1px solid rgba(126, 210, 255, .34);
+          box-shadow: inset 0 0 26px rgba(40, 174, 255, .08), 0 22px 50px rgba(7, 21, 47, .2);
+        }
+
+        .upgradeClockTop {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          color: #86d9ff;
+          font-size: 12px;
+          font-weight: 950;
+          letter-spacing: 2.4px;
+        }
+
+        .upgradeDot {
+          width: 9px;
+          height: 9px;
+          border-radius: 50%;
+          background: #62e6a7;
+          box-shadow: 0 0 14px rgba(98, 230, 167, .9);
+          animation: upgradePulse 1.8s ease-in-out infinite;
+        }
+
+        .upgradeDigits {
+          display: grid;
+          grid-template-columns: auto auto auto;
+          align-items: end;
+          gap: 12px;
+          margin-top: 10px;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-variant-numeric: tabular-nums;
+          text-shadow: 0 0 16px rgba(85, 207, 255, .36);
+        }
+
+        .upgradeDate {
+          font-size: 17px;
+          letter-spacing: 1px;
+          color: #a9dff6;
+        }
+
+        .upgradeTime {
+          font-size: 30px;
+          line-height: 1;
+          letter-spacing: 2px;
+          font-weight: 950;
+          color: #ffffff;
+        }
+
+        .upgradeZone {
+          font-size: 13px;
+          font-weight: 950;
+          color: #62e6a7;
+          padding-bottom: 3px;
+        }
+
+        .upgradeClock small {
+          display: block;
+          margin-top: 10px;
+          color: #6faac7;
+          letter-spacing: 1.3px;
+          font-size: 10px;
+          font-weight: 900;
+        }
+
+        @keyframes upgradePulse {
+          0%, 100% { opacity: .55; transform: scale(.9); }
+          50% { opacity: 1; transform: scale(1.12); }
         }
 
         .verifiedBadge {
@@ -299,6 +568,102 @@ export default function HomePage() {
           margin: 0;
         }
 
+        .pricingBand {
+          max-width: 1440px;
+          margin: 6px auto 28px;
+          padding: 40px 6vw;
+          display: grid;
+          grid-template-columns: 1.1fr 1fr auto;
+          align-items: center;
+          gap: 24px;
+          background: rgba(255,255,255,.82);
+          border-top: 1px solid #d8e7ff;
+          border-bottom: 1px solid #d8e7ff;
+        }
+
+        .pricingIntro small {
+          color: #1165e8;
+          font-weight: 950;
+          letter-spacing: 2.8px;
+        }
+
+        .pricingIntro h2 {
+          margin: 10px 0 10px;
+          font-size: 34px;
+          letter-spacing: -0.04em;
+        }
+
+        .pricingIntro p {
+          margin: 0;
+          color: #3e5578;
+          font-size: 17px;
+          line-height: 1.6;
+        }
+
+        .priceGrid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+
+        .priceCard {
+          padding: 22px;
+          border-radius: 24px;
+          background: #f5f9ff;
+          border: 1px solid #d4e5ff;
+        }
+
+        .priceCard span {
+          font-size: 11px;
+          font-weight: 950;
+          letter-spacing: 2px;
+          color: #1165e8;
+        }
+
+        .priceCard h3 {
+          margin: 10px 0 8px;
+          font-size: 21px;
+          letter-spacing: -0.03em;
+          color: #000000;
+        }
+
+        .priceCard strong {
+          display: block;
+          font-size: 31px;
+          letter-spacing: -0.04em;
+          color: #1165e8;
+        }
+
+        .priceCard p {
+          margin: 8px 0 0;
+          color: #526784;
+          font-size: 14px;
+          font-weight: 800;
+        }
+
+        .premiumPriceCard {
+          background: #fff4f6;
+          border-color: #ffd2d9;
+        }
+
+        .premiumPriceCard span,
+        .premiumPriceCard strong {
+          color: #d91d35;
+        }
+
+        .pricingCta {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 190px;
+          padding: 17px 22px;
+          border-radius: 18px;
+          background: #07152f;
+          color: white;
+          text-decoration: none;
+          font-weight: 950;
+        }
+
         .cycleSection {
           padding: 60px 6vw 76px;
         }
@@ -404,10 +769,69 @@ export default function HomePage() {
           margin-bottom: 12px;
         }
 
+        .businessFooter {
+          max-width: 1440px;
+          margin: 0 auto;
+          padding: 34px 6vw 48px;
+          border-top: 1px solid #d8e7ff;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 24px;
+          flex-wrap: wrap;
+          color: #314968;
+        }
+
+        .businessFooter strong {
+          display: block;
+          color: #07152f;
+          font-size: 22px;
+        }
+
+        .businessFooter p {
+          margin: 7px 0 0;
+          font-size: 15px;
+        }
+
+        .footerLinks {
+          display: flex;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+
+        .footerLinks a {
+          color: #314968;
+          text-decoration: none;
+          font-weight: 850;
+        }
+
         @media (max-width: 900px) {
           .cards3,
           .quality,
-          .care {
+          .care,
+          .pricingBand {
+            grid-template-columns: 1fr;
+          }
+
+          .heroStatus {
+            width: 100%;
+            justify-content: flex-start;
+          }
+
+          .upgradeClock {
+            min-width: 0;
+            width: 100%;
+          }
+
+          .upgradeDigits {
+            grid-template-columns: 1fr auto;
+          }
+
+          .upgradeDate {
+            grid-column: 1 / -1;
+          }
+
+          .priceGrid {
             grid-template-columns: 1fr;
           }
 

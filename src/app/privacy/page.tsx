@@ -27,6 +27,23 @@ function TopNav() {
   );
 }
 
+function BusinessFooter() {
+  return (
+    <footer className="businessFooter">
+      <div>
+        <strong>다르마(DHARMA) AI</strong>
+        <p>사업자명: 다르마(DHARMA) AI</p>
+      </div>
+      <div className="footerLinks">
+        <a href="/pricing">요금</a>
+        <a href="/refund">환불규정</a>
+        <a href="/terms">이용약관</a>
+        <a href="/privacy">개인정보처리방침</a>
+      </div>
+    </footer>
+  );
+}
+
 const styleBlock = (
   <style>{`
     * { box-sizing: border-box; }
@@ -200,6 +217,38 @@ const styleBlock = (
       font-weight: 950;
       box-shadow: 0 18px 42px rgba(17,101,232,.24);
     }
+
+    .businessFooter {
+      max-width: 1400px;
+      margin: 38px auto 0;
+      padding: 30px 6vw 10px;
+      border-top: 1px solid #d8e7ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .businessFooter strong {
+      display: block;
+      font-size: 21px;
+      color: #07152f;
+    }
+    .businessFooter p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: #536985;
+    }
+    .footerLinks {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footerLinks a {
+      color: #30496e;
+      text-decoration: none;
+      font-weight: 900;
+    }
     @media (max-width: 900px) {
       .grid, .grid3 {
         grid-template-columns: 1fr;
@@ -222,10 +271,16 @@ export default function PrivacyPage() {
       <PageHeader
         eyebrow="PRIVACY POLICY"
         title="개인정보처리방침"
-        description="다르마는 자료 결제, 다운로드 권한 관리, 고객 문의 응대를 위해 필요한 범위의 정보만 처리합니다."
+        description="다르마(DHARMA) AI는 자료 결제, 다운로드 권한 관리, 고객 문의 응대를 위해 필요한 범위의 정보만 처리합니다."
       />
 
       <section className="section">
+        <article className="card">
+          <h2>개인정보 처리 주체</h2>
+          <p><strong>사업자명: 다르마(DHARMA) AI</strong></p>
+          <p>서비스 운영에 필요한 범위에서 개인정보를 처리하며, 관련 사업자 정보와 고객센터 정보는 홈페이지에 표시합니다.</p>
+        </article>
+
         <article className="card">
           <h2>수집하는 정보</h2>
           <table className="table">
@@ -274,10 +329,11 @@ export default function PrivacyPage() {
 
         <article className="card">
           <h2>제3자 제공</h2>
-          <p>다르마는 고객의 개인정보를 무단으로 제3자에게 판매하거나 제공하지 않습니다.</p>
+          <p>다르마(DHARMA) AI는 고객의 개인정보를 무단으로 제3자에게 판매하거나 제공하지 않습니다.</p>
           <p>다만 결제 처리, 법령상 의무 이행, 고객 요청 처리에 필요한 경우 관련 서비스 제공자와 제한적으로 처리될 수 있습니다.</p>
         </article>
       </section>
+      <BusinessFooter />
       {styleBlock}
     </main>
   );
