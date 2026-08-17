@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import DharmaBusinessFooter from "../components/DharmaBusinessFooter";
 
-const FALLBACK_LAST_UPGRADE_AT = "2026-08-13T03:01:56+09:00";
-
-type UploadClockPayload = {
-  lastUploadAt?: unknown;
-  source?: unknown;
-};
+const FALLBACK_LAST_UPGRADE_AT = "2026-08-14T18:24:03+09:00";
 
 function formatKstDateTime(value: string) {
   const parsed = new Date(value);
 
   if (Number.isNaN(parsed.getTime())) {
-    return { date: "----.--.--", time: "--:--:--" };
+    return { date: "2026.08.14", time: "18:24:03" };
   }
 
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -36,110 +31,24 @@ function formatKstDateTime(value: string) {
   };
 }
 
-function isLiveMaterialSource(source: string) {
-  return (
-    source.startsWith("status:") ||
-    source.startsWith("material:") ||
-    source === "materials-api"
-  );
-}
-
 function DigitalUpgradeClock() {
-  const fallback =
+  const raw =
     process.env.NEXT_PUBLIC_DHARMA_LAST_UPGRADE_AT ||
     FALLBACK_LAST_UPGRADE_AT;
-  const [raw, setRaw] = useState(fallback);
-  const [source, setSource] = useState("loading");
-
-  useEffect(() => {
-    let active = true;
-
-    const syncLatestUploadTime = async () => {
-      try {
-        const response = await fetch(
-          `/api/system/latest-material-upload?_=${Date.now()}`,
-          { cache: "no-store" },
-        );
-
-        if (!response.ok) {
-          throw new Error(`upload clock request failed: ${response.status}`);
-        }
-
-        const payload = (await response.json()) as UploadClockPayload;
-        const candidate =
-          typeof payload.lastUploadAt === "string"
-            ? payload.lastUploadAt
-            : "";
-        const parsed = new Date(candidate);
-
-        if (!candidate || Number.isNaN(parsed.getTime())) {
-          throw new Error("upload clock timestamp is missing");
-        }
-
-        if (active) {
-          setRaw(candidate);
-          setSource(
-            typeof payload.source === "string"
-              ? payload.source
-              : "materials-api",
-          );
-        }
-      } catch {
-        if (active) {
-          setSource("environment-fallback");
-        }
-      }
-    };
-
-    const handleFocus = () => {
-      void syncLatestUploadTime();
-    };
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        void syncLatestUploadTime();
-      }
-    };
-
-    void syncLatestUploadTime();
-    const timer = window.setInterval(syncLatestUploadTime, 15_000);
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener(
-        "visibilitychange",
-        handleVisibilityChange,
-      );
-    };
-  }, []);
-
   const display = formatKstDateTime(raw);
-  const live = isLiveMaterialSource(source);
-  const statusText =
-    source === "loading"
-      ? "CHECKING LATEST MATERIAL UPLOAD"
-      : live
-        ? "DHARMA MATERIAL UPLOAD SYNCED"
-        : "FALLBACK TIME · MATERIAL DATA NOT FOUND";
 
   return (
-    <aside
-      className="upgradeClock"
-      aria-label="다르마 자료의 마지막 업로드 시각"
-    >
+    <aside className="upgradeClock" aria-label="다르마 시스템 마지막 업그레이드 시각">
       <div className="upgradeClockTop">
         <span className="upgradeDot" aria-hidden="true" />
-        <span>LAST MATERIAL UPLOAD</span>
+        <span>LAST UPGRADE</span>
       </div>
       <time className="upgradeDigits" dateTime={raw}>
         <span className="upgradeDate">{display.date}</span>
         <span className="upgradeTime">{display.time}</span>
         <span className="upgradeZone">KST</span>
       </time>
-      <small>{statusText}</small>
+      <small>DHARMA SYSTEM UPGRADE COMPLETE</small>
     </aside>
   );
 }
@@ -288,18 +197,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="businessFooter">
-        <div>
-          <strong>다르마(DHARMA) AI</strong>
-          <p>사업자명: 다르마(DHARMA) AI</p>
-        </div>
-        <div className="footerLinks">
-          <a href="/pricing">요금</a>
-          <a href="/refund">환불규정</a>
-          <a href="/terms">이용약관</a>
-          <a href="/privacy">개인정보처리방침</a>
-        </div>
-      </footer>
+      <DharmaBusinessFooter />
 
       <style>{`
         * {
@@ -624,7 +522,6 @@ export default function HomePage() {
           margin: 10px 0 8px;
           font-size: 21px;
           letter-spacing: -0.03em;
-          color: #000000;
         }
 
         .priceCard strong {
@@ -767,42 +664,6 @@ export default function HomePage() {
           display: block;
           font-size: 24px;
           margin-bottom: 12px;
-        }
-
-        .businessFooter {
-          max-width: 1440px;
-          margin: 0 auto;
-          padding: 34px 6vw 48px;
-          border-top: 1px solid #d8e7ff;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 24px;
-          flex-wrap: wrap;
-          color: #314968;
-        }
-
-        .businessFooter strong {
-          display: block;
-          color: #07152f;
-          font-size: 22px;
-        }
-
-        .businessFooter p {
-          margin: 7px 0 0;
-          font-size: 15px;
-        }
-
-        .footerLinks {
-          display: flex;
-          gap: 16px;
-          flex-wrap: wrap;
-        }
-
-        .footerLinks a {
-          color: #314968;
-          text-decoration: none;
-          font-weight: 850;
         }
 
         @media (max-width: 900px) {

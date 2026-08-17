@@ -1,5 +1,8 @@
 "use client";
 
+import DharmaBusinessFooter from "../../components/DharmaBusinessFooter";
+import { DHARMA_BUSINESS } from "../../lib/dharmaBusiness";
+
 
 function PageHeader({ title, eyebrow, description }: { title: string; eyebrow: string; description: string }) {
   return (
@@ -24,23 +27,6 @@ function TopNav() {
         <a href="/privacy">개인정보</a>
       </nav>
     </header>
-  );
-}
-
-function BusinessFooter() {
-  return (
-    <footer className="businessFooter">
-      <div>
-        <strong>다르마(DHARMA) AI</strong>
-        <p>사업자명: 다르마(DHARMA) AI</p>
-      </div>
-      <div className="footerLinks">
-        <a href="/pricing">요금</a>
-        <a href="/refund">환불규정</a>
-        <a href="/terms">이용약관</a>
-        <a href="/privacy">개인정보처리방침</a>
-      </div>
-    </footer>
   );
 }
 
@@ -217,38 +203,6 @@ const styleBlock = (
       font-weight: 950;
       box-shadow: 0 18px 42px rgba(17,101,232,.24);
     }
-
-    .businessFooter {
-      max-width: 1400px;
-      margin: 38px auto 0;
-      padding: 30px 6vw 10px;
-      border-top: 1px solid #d8e7ff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 22px;
-      flex-wrap: wrap;
-    }
-    .businessFooter strong {
-      display: block;
-      font-size: 21px;
-      color: #07152f;
-    }
-    .businessFooter p {
-      margin: 6px 0 0;
-      font-size: 15px;
-      color: #536985;
-    }
-    .footerLinks {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .footerLinks a {
-      color: #30496e;
-      text-decoration: none;
-      font-weight: 900;
-    }
     @media (max-width: 900px) {
       .grid, .grid3 {
         grid-template-columns: 1fr;
@@ -275,6 +229,17 @@ export default function TermsPage() {
       />
 
       <section className="section">
+        <article className="card">
+          <h2>사업자 및 서비스 운영 주체</h2>
+          <ul>
+            <li>서비스명: {DHARMA_BUSINESS.serviceName}</li>
+            <li>상호: {DHARMA_BUSINESS.tradeName}</li>
+            <li>대표자: {DHARMA_BUSINESS.representative}</li>
+            <li>사업자등록번호: {DHARMA_BUSINESS.registrationNumber}</li>
+            <li>사업장 주소: {DHARMA_BUSINESS.address}</li>
+          </ul>
+        </article>
+
         <article className="card">
           <h2>서비스 목적</h2>
           <p>다르마(DHARMA) AI는 교과 연계 탐구, 도서 연계 탐구, 고등학교 교육과정 기반 심화 탐구에 활용할 수 있는 원문 자료 다운로드 서비스를 제공합니다.</p>
@@ -308,7 +273,7 @@ export default function TermsPage() {
           <p>자료는 참고용이며, 최종 탐구 결과물은 사용자가 자신의 이해와 표현으로 재구성해야 합니다.</p>
         </article>
       </section>
-      <BusinessFooter />
+      <DharmaBusinessFooter />
       {styleBlock}
     </main>
   );

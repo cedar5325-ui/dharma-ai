@@ -1,5 +1,7 @@
 "use client";
 
+import DharmaBusinessFooter from "../../components/DharmaBusinessFooter";
+
 
 function PageHeader({ title, eyebrow, description }: { title: string; eyebrow: string; description: string }) {
   return (
@@ -24,23 +26,6 @@ function TopNav() {
         <a href="/privacy">개인정보</a>
       </nav>
     </header>
-  );
-}
-
-function BusinessFooter() {
-  return (
-    <footer className="businessFooter">
-      <div>
-        <strong>다르마(DHARMA) AI</strong>
-        <p>사업자명: 다르마(DHARMA) AI</p>
-      </div>
-      <div className="footerLinks">
-        <a href="/pricing">요금</a>
-        <a href="/refund">환불규정</a>
-        <a href="/terms">이용약관</a>
-        <a href="/privacy">개인정보처리방침</a>
-      </div>
-    </footer>
   );
 }
 
@@ -217,38 +202,6 @@ const styleBlock = (
       font-weight: 950;
       box-shadow: 0 18px 42px rgba(17,101,232,.24);
     }
-
-    .businessFooter {
-      max-width: 1400px;
-      margin: 38px auto 0;
-      padding: 30px 6vw 10px;
-      border-top: 1px solid #d8e7ff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 22px;
-      flex-wrap: wrap;
-    }
-    .businessFooter strong {
-      display: block;
-      font-size: 21px;
-      color: #07152f;
-    }
-    .businessFooter p {
-      margin: 6px 0 0;
-      font-size: 15px;
-      color: #536985;
-    }
-    .footerLinks {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .footerLinks a {
-      color: #30496e;
-      text-decoration: none;
-      font-weight: 900;
-    }
     @media (max-width: 900px) {
       .grid, .grid3 {
         grid-template-columns: 1fr;
@@ -324,7 +277,7 @@ export default function RefundPage() {
           <p>무단 공유, 재배포, 재판매는 허용되지 않습니다.</p>
         </article>
       </section>
-      <BusinessFooter />
+      <DharmaBusinessFooter />
       {styleBlock}
     </main>
   );
