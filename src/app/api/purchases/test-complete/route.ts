@@ -1,3 +1,4 @@
+import { enforceTestPurchasePolicy } from "@/lib/pg-download-policy";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -19,6 +20,12 @@ function assertEnv() {
 }
 
 export async function POST(request: NextRequest) {
+  // DHARMA_DISABLE_TEST_PURCHASE
+  const dharmaTestPurchaseBlock = enforceTestPurchasePolicy(request);
+  if (dharmaTestPurchaseBlock) return dharmaTestPurchaseBlock;
+
+
+
   try {
     const { url, key } = assertEnv();
     const body = await request.json().catch(() => ({}));

@@ -1,3 +1,4 @@
+import { enforcePgApprovalBeforeDownload } from "@/lib/pg-download-policy";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -137,6 +138,12 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> | { id: string } }
 ) {
+  // DHARMA_PG_PAYMENT_DOWNLOAD_POLICY
+  const dharmaPgPolicyBlock = enforcePgApprovalBeforeDownload(request);
+  if (dharmaPgPolicyBlock) return dharmaPgPolicyBlock;
+
+
+
   try {
     const params = await context.params;
     const materialId = params.id;
