@@ -1,5 +1,31 @@
-import { enforcePgApprovalBeforeDownload } from "@/lib/pg-download-policy";
+﻿import { enforcePgApprovalBeforeDownload } from "@/lib/pg-download-policy";
 import { NextRequest, NextResponse } from "next/server";
+
+
+async function hasDharmaAdminDownloadAccess(request: NextRequest) {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  if (!cookieHeader) return false;
+
+  try {
+    const adminCheck = await fetch(new URL("/admin", request.url), {
+      method: "GET",
+      headers: {
+        cookie: cookieHeader,
+      },
+      redirect: "manual",
+      cache: "no-store",
+    });
+
+    // Existing /admin authentication remains the source of truth.
+    // Authenticated admin => normal 2xx page.
+    // Unauthenticated visitor => redirect to /admin-login.
+    return adminCheck.status >= 200 && adminCheck.status < 300;
+  } catch {
+    // Fail closed: if admin verification cannot be confirmed,
+    // continue through the normal PG/payment policy.
+    return false;
+  }
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,7 +43,7 @@ function assertEnv() {
   const key = getServiceKey();
 
   if (!url || !key) {
-    throw new Error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY가 .env.local에 없습니다.");
+    throw new Error("SUPABASE_URL ?먮뒗 SUPABASE_SERVICE_ROLE_KEY媛 .env.local???놁뒿?덈떎.");
   }
 
   return { url, key };
@@ -45,7 +71,7 @@ async function fetchMaterial(url: string, key: string, materialId: string) {
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
-    throw new Error(`자료 조회 실패 ${response.status}: ${text.slice(0, 500)}`);
+    throw new Error(`?먮즺 議고쉶 ?ㅽ뙣 ${response.status}: ${text.slice(0, 500)}`);
   }
 
   const rows = await response.json();
@@ -68,7 +94,7 @@ async function fetchPaidPurchase(url: string, key: string, materialId: string, t
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
-    throw new Error(`결제 권한 조회 실패 ${response.status}: ${text.slice(0, 500)}`);
+    throw new Error(`寃곗젣 沅뚰븳 議고쉶 ?ㅽ뙣 ${response.status}: ${text.slice(0, 500)}`);
   }
 
   const rows = await response.json();
@@ -99,14 +125,14 @@ async function createSignedUrl(
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
-    throw new Error(`다운로드 URL 생성 실패 ${response.status}: ${text.slice(0, 500)}`);
+    throw new Error(`?ㅼ슫濡쒕뱶 URL ?앹꽦 ?ㅽ뙣 ${response.status}: ${text.slice(0, 500)}`);
   }
 
   const json = await response.json();
   const signed = json.signedURL || json.signedUrl || json.signed_url || json.url;
 
   if (!signed) {
-    throw new Error("Supabase Storage signed URL이 생성되지 않았습니다.");
+    throw new Error("Supabase Storage signed URL???앹꽦?섏? ?딆븯?듬땲??");
   }
 
   const signedUrl = signed.startsWith("http")
@@ -138,9 +164,22 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> | { id: string } }
 ) {
-  // DHARMA_PG_PAYMENT_DOWNLOAD_POLICY
-  const dharmaPgPolicyBlock = enforcePgApprovalBeforeDownload(request);
-  if (dharmaPgPolicyBlock) return dharmaPgPolicyBlock;
+  // DHARMA_ADMIN_COOKIE_DOWNLOAD_BYPASS_V5
+
+  const dharmaAdminDownloadAllowed =
+
+    request.cookies.get("dharma_admin_session")?.value === "authorized";
+
+
+  if (!dharmaAdminDownloadAllowed) {
+
+    // DHARMA_PG_PAYMENT_DOWNLOAD_POLICY
+
+    const dharmaPgPolicyBlock = enforcePgApprovalBeforeDownload(request);
+
+    if (dharmaPgPolicyBlock) return dharmaPgPolicyBlock;
+
+  }
 
 
 
@@ -149,11 +188,14 @@ export async function GET(
     const materialId = params.id;
     const token = request.nextUrl.searchParams.get("token") || "";
 
-    if (!token) {
+    // DHARMA_ADMIN_FULL_DOWNLOAD_BYPASS_V6
+
+
+    if (!dharmaAdminDownloadAllowed && !token) {
       return NextResponse.json(
         {
           ok: false,
-          message: "다운로드 토큰이 없습니다. 결제 완료 후 다시 다운로드해 주세요.",
+          message: "?ㅼ슫濡쒕뱶 ?좏겙???놁뒿?덈떎. 寃곗젣 ?꾨즺 ???ㅼ떆 ?ㅼ슫濡쒕뱶??二쇱꽭??",
         },
         { status: 403 }
       );
@@ -167,24 +209,37 @@ export async function GET(
       return NextResponse.json(
         {
           ok: false,
-          message: "자료를 찾지 못했습니다. 자료 목록에서 다시 선택해 주세요.",
+          message: "?먮즺瑜?李얠? 紐삵뻽?듬땲?? ?먮즺 紐⑸줉?먯꽌 ?ㅼ떆 ?좏깮??二쇱꽭??",
         },
         { status: 404 }
       );
     }
 
-    const purchase = await fetchPaidPurchase(url, key, material.id, token);
+    let purchase: any = null;
 
-    if (!purchase) {
+
+
+    if (!dharmaAdminDownloadAllowed) {
+
+
+      purchase = await fetchPaidPurchase(url, key, material.id, token);
+
+
+
+      if (!purchase) {
       return NextResponse.json(
         {
           ok: false,
-          message: "결제 완료 후 다운로드할 수 있습니다.",
+          message: "寃곗젣 ?꾨즺 ???ㅼ슫濡쒕뱶?????덉뒿?덈떎.",
         },
         { status: 403 }
       );
-    }
 
+
+      }
+
+
+    }
     const bucket = material.storage_bucket || process.env.SUPABASE_STORAGE_BUCKET || "dharma-original-files";
     const storagePath = material.storage_path;
     const fileName = material.file_name || material.title || "download";
@@ -193,7 +248,7 @@ export async function GET(
       return NextResponse.json(
         {
           ok: false,
-          message: "자료의 storage_path가 없습니다. 관리자 업로드를 다시 확인해 주세요.",
+          message: "?먮즺??storage_path媛 ?놁뒿?덈떎. 愿由ъ옄 ?낅줈?쒕? ?ㅼ떆 ?뺤씤??二쇱꽭??",
         },
         { status: 500 }
       );
@@ -201,16 +256,23 @@ export async function GET(
 
     const signedUrl = await createSignedUrl(url, key, bucket, storagePath, fileName);
 
-    await markDownloaded(url, key, purchase);
+    if (purchase) {
+
+
+      await markDownloaded(url, key, purchase);
+
+
+    }
 
     return NextResponse.redirect(signedUrl);
   } catch (error) {
     return NextResponse.json(
       {
         ok: false,
-        message: error instanceof Error ? error.message : "다운로드 처리 중 오류가 발생했습니다.",
+        message: error instanceof Error ? error.message : "?ㅼ슫濡쒕뱶 泥섎━ 以??ㅻ쪟媛 諛쒖깮?덉뒿?덈떎.",
       },
       { status: 500 }
     );
   }
 }
+
