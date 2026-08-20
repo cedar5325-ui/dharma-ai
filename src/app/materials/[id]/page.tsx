@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
+import TossReviewProductPolicy from "@/components/TossReviewProductPolicy";
 
 type Material = {
   id: string;
@@ -271,7 +272,10 @@ export default function MaterialDetailPage() {
           )}
         </section>
       )}
-    </main>
+    
+      {/* DHARMA_TOSS_REVIEW_STEP2_PRODUCT_DETAIL */}
+      <TossReviewProductPolicy />
+</main>
   );
 }
 
