@@ -1,171 +1,122 @@
+"use client";
+
+import Link from "next/link";
 import { DHARMA_BUSINESS } from "../lib/dharmaBusiness";
 
 export default function DharmaBusinessFooter() {
-  const businessType = DHARMA_BUSINESS.businessTypes.join(" · ");
-  const businessItem = DHARMA_BUSINESS.businessItems.join(" · ");
-
   return (
-    <footer className="legalBusinessFooter">
-      <div className="legalBusinessInfo">
-        <div className="legalBusinessHeading">
-          <strong>{DHARMA_BUSINESS.serviceName}</strong>
-          <span>운영 상호: {DHARMA_BUSINESS.tradeName}</span>
+    <footer
+      style={{
+        marginTop: 56,
+        borderTop: "1px solid #dfe7f3",
+        background: "#f7f9fc",
+        color: "#445268",
+      }}
+    >
+      <div
+        style={{
+          width: "min(1180px, calc(100% - 32px))",
+          margin: "0 auto",
+          padding: "30px 0 34px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px 16px",
+            alignItems: "baseline",
+            marginBottom: 16,
+          }}
+        >
+          <strong
+            style={{
+              color: "#0b1b3a",
+              fontSize: 16,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {DHARMA_BUSINESS.brandName}
+          </strong>
+          <span style={{ fontSize: 13 }}>
+            법적 사업자명: {DHARMA_BUSINESS.businessName}
+          </span>
         </div>
 
-        <div className="legalBusinessMeta" aria-label="사업자 기본 정보">
-          <span>
-            <b>대표자</b> {DHARMA_BUSINESS.representative}
-          </span>
-          <span>
-            <b>사업자등록번호</b> {DHARMA_BUSINESS.registrationNumber}
-          </span>
-          <span className="taxBadge">{DHARMA_BUSINESS.taxType}</span>
+        {/* DHARMA_TOSS_REVIEW_STEP4_BUSINESS_INFO */}
+        <div
+          aria-label="사업자정보"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "8px 22px",
+            fontSize: 13,
+            lineHeight: 1.75,
+          }}
+        >
+          <div>
+            <strong>상호명</strong> {DHARMA_BUSINESS.businessName}
+          </div>
+          <div>
+            <strong>대표자명</strong> {DHARMA_BUSINESS.representative}
+          </div>
+          <div>
+            <strong>사업자등록번호</strong> {DHARMA_BUSINESS.businessNumber}
+          </div>
+          <div>
+            <strong>고객센터</strong> {DHARMA_BUSINESS.phone}
+          </div>
+          <div style={{ gridColumn: "1 / -1" }}>
+            <strong>사업장 주소</strong> {DHARMA_BUSINESS.address}
+          </div>
+          <div>
+            <strong>업태</strong> {DHARMA_BUSINESS.businessType}
+          </div>
+          <div>
+            <strong>종목</strong> {DHARMA_BUSINESS.businessItems}
+          </div>
+          <div>
+            <strong>이메일</strong>{" "}
+            <a
+              href={`mailto:${DHARMA_BUSINESS.email}`}
+              style={{ color: "inherit" }}
+            >
+              {DHARMA_BUSINESS.email}
+            </a>
+          </div>
         </div>
 
-        <address>
-          <b>사업장 주소</b> {DHARMA_BUSINESS.address}
-        </address>
-        <p>
-          <b>업태</b> {businessType}
-        </p>
-        <p>
-          <b>종목</b> {businessItem}
-        </p>
+        <nav
+          aria-label="정책 링크"
+          style={{
+            display: "flex",
+            gap: 16,
+            flexWrap: "wrap",
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: "1px solid #e4eaf3",
+            fontSize: 13,
+            fontWeight: 700,
+          }}
+        >
+          <Link href="/pricing" style={{ color: "#445268", textDecoration: "none" }}>
+            가격안내
+          </Link>
+          <Link href="/refund" style={{ color: "#445268", textDecoration: "none" }}>
+            환불정책
+          </Link>
+          <Link href="/terms" style={{ color: "#445268", textDecoration: "none" }}>
+            이용약관
+          </Link>
+          <Link href="/privacy" style={{ color: "#445268", textDecoration: "none" }}>
+            개인정보처리방침
+          </Link>
+        </nav>
 
-        {DHARMA_BUSINESS.mailOrderReportNumber ? (
-          <p>
-            <b>통신판매업 신고번호</b> {DHARMA_BUSINESS.mailOrderReportNumber}
-          </p>
-        ) : null}
+        <div style={{ marginTop: 14, fontSize: 12, color: "#78869a" }}>
+          © 2026 {DHARMA_BUSINESS.brandName}. All rights reserved.
+        </div>
       </div>
-
-      <nav className="legalFooterLinks" aria-label="사업자 및 이용 정책">
-        <a href="/pricing">요금</a>
-        <a href="/refund">환불규정</a>
-        <a href="/terms">이용약관</a>
-        <a href="/privacy">개인정보처리방침</a>
-      </nav>
-
-      <style jsx>{`
-        .legalBusinessFooter {
-          max-width: 1440px;
-          margin: 38px auto 0;
-          padding: 34px 6vw 48px;
-          border-top: 1px solid #d8e7ff;
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) auto;
-          align-items: end;
-          gap: 28px;
-          color: #536985;
-        }
-
-        .legalBusinessHeading {
-          display: flex;
-          align-items: baseline;
-          gap: 12px;
-          flex-wrap: wrap;
-          margin-bottom: 13px;
-        }
-
-        .legalBusinessHeading strong {
-          color: #07152f;
-          font-size: 22px;
-          letter-spacing: -0.03em;
-        }
-
-        .legalBusinessHeading span {
-          color: #30496e;
-          font-size: 15px;
-          font-weight: 800;
-        }
-
-        .legalBusinessMeta {
-          display: flex;
-          align-items: center;
-          gap: 10px 18px;
-          flex-wrap: wrap;
-          margin-bottom: 9px;
-          font-size: 14px;
-          line-height: 1.7;
-        }
-
-        .legalBusinessMeta span:not(:last-child)::after {
-          content: "";
-          display: inline-block;
-          width: 1px;
-          height: 12px;
-          margin-left: 18px;
-          background: #c7d7ee;
-          vertical-align: -1px;
-        }
-
-        .legalBusinessInfo b {
-          color: #30496e;
-          margin-right: 5px;
-        }
-
-        .taxBadge {
-          display: inline-flex;
-          padding: 4px 9px;
-          border-radius: 999px;
-          background: #eaf4ff;
-          color: #1165e8;
-          font-size: 12px;
-          font-weight: 900;
-        }
-
-        .taxBadge::after {
-          display: none !important;
-        }
-
-        address,
-        p {
-          margin: 5px 0 0;
-          font-size: 14px;
-          line-height: 1.75;
-          font-style: normal;
-          color: #536985;
-        }
-
-        .legalFooterLinks {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px 16px;
-          flex-wrap: wrap;
-          max-width: 360px;
-        }
-
-        .legalFooterLinks a {
-          color: #30496e;
-          text-decoration: none;
-          font-size: 14px;
-          font-weight: 900;
-          white-space: nowrap;
-        }
-
-        .legalFooterLinks a:hover,
-        .legalFooterLinks a:focus-visible {
-          color: #1165e8;
-          text-decoration: underline;
-          text-underline-offset: 4px;
-        }
-
-        @media (max-width: 900px) {
-          .legalBusinessFooter {
-            grid-template-columns: 1fr;
-            align-items: start;
-          }
-
-          .legalFooterLinks {
-            justify-content: flex-start;
-            max-width: none;
-          }
-
-          .legalBusinessMeta span::after {
-            display: none !important;
-          }
-        }
-      `}</style>
     </footer>
   );
 }
