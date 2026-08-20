@@ -1,284 +1,219 @@
 "use client";
 
+import Link from "next/link";
 import DharmaBusinessFooter from "../../components/DharmaBusinessFooter";
 
-
-function PageHeader({ title, eyebrow, description }: { title: string; eyebrow: string; description: string }) {
-  return (
-    <section className="hero">
-      <div className="eyebrow">{eyebrow}</div>
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </section>
-  );
-}
-
-function TopNav() {
-  return (
-    <header className="header">
-      <strong>다르마(DHARMA) AI</strong>
-      <nav>
-        <a href="/">홈</a>
-        <a href="/materials">자료 다운로드</a>
-        <a href="/pricing">요금</a>
-        <a href="/refund">환불</a>
-        <a href="/terms">약관</a>
-        <a href="/privacy">개인정보</a>
-      </nav>
-    </header>
-  );
-}
-
-const styleBlock = (
-  <style>{`
-    * { box-sizing: border-box; }
-    .page {
-      min-height: 100vh;
-      background: linear-gradient(180deg, #ffffff 0%, #f1f7ff 100%);
-      color: #07152f;
-      font-family: Arial, sans-serif;
-      padding-bottom: 90px;
-    }
-    .header {
-      height: 86px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 0 5vw;
-      border-bottom: 1px solid #d9e7ff;
-      background: rgba(255,255,255,.94);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .header strong {
-      font-size: 22px;
-      font-weight: 950;
-    }
-    nav {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-weight: 900;
-    }
-    nav a {
-      color: #07152f;
-      text-decoration: none;
-    }
-    .hero, .section {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding-left: 6vw;
-      padding-right: 6vw;
-    }
-    .hero {
-      padding-top: 72px;
-      padding-bottom: 28px;
-    }
-    .eyebrow {
-      color: #1165e8;
-      letter-spacing: 4px;
-      font-weight: 950;
-      margin-bottom: 18px;
-    }
-    h1 {
-      font-size: clamp(48px, 6vw, 76px);
-      line-height: 1.05;
-      letter-spacing: -0.055em;
-      margin: 0 0 22px;
-      font-weight: 950;
-    }
-    .hero p {
-      font-size: 22px;
-      line-height: 1.7;
-      color: #385173;
-      max-width: 980px;
-    }
-    .card {
-      background: white;
-      border: 1px solid #d8e7ff;
-      border-radius: 34px;
-      box-shadow: 0 22px 60px rgba(17,101,232,.08);
-      padding: 34px;
-      margin-top: 24px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-    }
-    .grid3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-    h2 {
-      font-size: 34px;
-      margin: 0 0 18px;
-      letter-spacing: -0.04em;
-    }
-    h3 {
-      font-size: 26px;
-      margin: 0 0 12px;
-      letter-spacing: -0.035em;
-    }
-    p, li {
-      font-size: 19px;
-      line-height: 1.8;
-      color: #30496e;
-    }
-    ul {
-      padding-left: 22px;
-      margin: 12px 0 0;
-    }
-    .price {
-      font-size: 46px;
-      font-weight: 950;
-      letter-spacing: -0.04em;
-      color: #1165e8;
-      margin: 12px 0;
-    }
-    .premium {
-      color: #e11931;
-    }
-    .badge {
-      display: inline-flex;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: #eaf4ff;
-      color: #1165e8;
-      font-weight: 950;
-      margin-bottom: 14px;
-    }
-    .redBadge {
-      background: #e11931;
-      color: white;
-    }
-    .notice {
-      background: #eaf4ff;
-      border: 1px solid #d8e7ff;
-      border-radius: 24px;
-      padding: 24px;
-      margin-top: 22px;
-      font-weight: 900;
-      color: #183f72;
-    }
-    .danger {
-      background: #fff4e5;
-      border-color: #ffd59b;
-      color: #7a3d00;
-    }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 22px;
-      margin-top: 18px;
-      font-size: 18px;
-    }
-    .table th, .table td {
-      border-bottom: 1px solid #d8e7ff;
-      padding: 18px;
-      text-align: left;
-      line-height: 1.6;
-    }
-    .table th {
-      background: #eaf4ff;
-      font-weight: 950;
-      color: #183f72;
-    }
-    .table tr:last-child td {
-      border-bottom: 0;
-    }
-    .cta {
-      display: inline-flex;
-      margin-top: 22px;
-      padding: 18px 28px;
-      border-radius: 18px;
-      background: #1165e8;
-      color: white;
-      text-decoration: none;
-      font-weight: 950;
-      box-shadow: 0 18px 42px rgba(17,101,232,.24);
-    }
-    @media (max-width: 900px) {
-      .grid, .grid3 {
-        grid-template-columns: 1fr;
-      }
-      .header {
-        height: auto;
-        padding: 18px 5vw;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
-  `}</style>
-);
-
+const rows = [
+  {
+    title: "결제 후 다운로드 전",
+    desc: "구매한 원문 파일을 아직 다운로드하지 않은 경우, 고객센터를 통해 환불을 요청할 수 있습니다. 환불 가능 여부는 결제 상태와 이용 이력을 확인한 뒤 안내합니다.",
+  },
+  {
+    title: "원문 파일 다운로드 후",
+    desc: "디지털 콘텐츠의 특성상 원문 파일 다운로드가 시작되었거나 완료된 이후에는 단순 변심에 의한 환불이 제한될 수 있습니다. 다만 관련 법령상 환불이 필요한 경우에는 해당 기준을 우선 적용합니다.",
+  },
+  {
+    title: "파일 오류·상품 설명과 현저한 차이",
+    desc: "파일이 정상적으로 열리지 않거나, 제공된 자료가 상품 상세 설명과 현저하게 다른 경우에는 확인 후 재제공 또는 환불을 진행합니다.",
+  },
+  {
+    title: "중복 결제·오결제",
+    desc: "동일 상품의 중복 결제 또는 명백한 오결제가 확인되는 경우에는 결제내역 확인 후 환불을 진행합니다.",
+  },
+  {
+    title: "서비스 제공기간",
+    desc: "구매한 자료의 이용 및 다운로드 가능 기간은 결제일로부터 30일입니다. 제공기간이 지난 뒤에는 단순 미이용을 이유로 자동 환불되지 않습니다.",
+  },
+  {
+    title: "환불 처리기간",
+    desc: "환불이 승인된 경우 결제수단 및 카드사 사정에 따라 실제 환급까지 영업일 기준 수일이 소요될 수 있습니다.",
+  },
+];
 
 export default function RefundPage() {
   return (
-    <main className="page">
-      <TopNav />
-      <PageHeader
-        eyebrow="REFUND POLICY"
-        title="환불 및 파일 오류 안내"
-        description="자료 다운로드 서비스의 특성상 다운로드 여부와 파일 오류 여부에 따라 환불 및 재제공 기준이 달라집니다."
-      />
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#f6f9ff",
+        color: "#091a3a",
+      }}
+    >
+      <section
+        style={{
+          width: "min(1080px, calc(100% - 32px))",
+          margin: "0 auto",
+          padding: "72px 0 52px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 900,
+            letterSpacing: "0.14em",
+            color: "#1769e8",
+            marginBottom: 14,
+          }}
+        >
+          DHARMA CUSTOMER POLICY
+        </div>
 
-      <section className="section">
-        <article className="card">
-          <h2>환불 기준</h2>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>상황</th>
-                <th>처리 기준</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>결제 후 다운로드 전</td>
-                <td>고객센터 확인 후 환불 가능</td>
-              </tr>
-              <tr>
-                <td>다운로드 완료 후</td>
-                <td>디지털 원문 자료 특성상 원칙적으로 환불 제한</td>
-              </tr>
-              <tr>
-                <td>파일 오류 또는 열람 불가</td>
-                <td>고객센터 문자 확인 후 원본 파일 재제공 또는 별도 안내</td>
-              </tr>
-              <tr>
-                <td>단순 변심</td>
-                <td>다운로드 전에는 확인 가능, 다운로드 후에는 환불 제한</td>
-              </tr>
-            </tbody>
-          </table>
-        </article>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: "clamp(36px, 6vw, 64px)",
+            lineHeight: 1.08,
+            letterSpacing: "-0.045em",
+          }}
+        >
+          환불정책
+        </h1>
 
-        <article className="card">
-          <h2>파일 문제 발생 시 처리</h2>
-          <p>다운로드 파일에 오류가 있거나 열리지 않는 문제가 발생한 경우, 고객센터로 문자 연락을 주시면 확인 후 원본 파일 제공을 도와드립니다.</p>
-          <div className="notice danger">
-            원본 파일 제공 요청은 자료 사용 예정일 기준 최소 3일 전까지 문자로 접수해 주세요.
+        <p
+          style={{
+            margin: "20px 0 0",
+            maxWidth: 820,
+            color: "#526176",
+            fontSize: 17,
+            lineHeight: 1.8,
+          }}
+        >
+          다르마(DHARMA) AI는 일반 탐구보고서 및 소논문 형태의 디지털 교육자료를
+          건별 일회성 결제로 제공합니다. 아래 기준은 고객이 결제 전 환불 가능 여부를
+          쉽게 확인할 수 있도록 안내하기 위한 정책입니다.
+        </p>
+
+        <div
+          style={{
+            marginTop: 32,
+            padding: "20px 22px",
+            borderRadius: 18,
+            border: "1px solid #cfe0ff",
+            background: "#eaf2ff",
+          }}
+        >
+          <strong style={{ display: "block", marginBottom: 8, fontSize: 17 }}>
+            상품 제공 기준
+          </strong>
+          <div style={{ lineHeight: 1.75, fontSize: 15 }}>
+            결제 완료 및 구매내역 확인 후 즉시 제공되며, 구매 자료의 이용·다운로드
+            가능 기간은 <strong>결제일로부터 30일</strong>입니다.
           </div>
-          <ul>
-            <li>파일명과 결제 자료명을 함께 보내 주세요.</li>
-            <li>오류 화면 또는 열리지 않는 상황을 간단히 설명해 주세요.</li>
-            <li>자료 사용 예정일 기준 최소 3일 전까지 요청해야 원본 파일 제공이 가능합니다.</li>
-          </ul>
-        </article>
+        </div>
 
-        <article className="card">
-          <h2>다운로드 권한</h2>
-          <p>자료는 월 구독 없이 1건 단위로 결제하며, 결제 완료 후 해당 자료 1건의 다운로드 권한이 부여됩니다.</p>
-          <p>무단 공유, 재배포, 재판매는 허용되지 않습니다.</p>
-        </article>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 16,
+            marginTop: 28,
+          }}
+        >
+          {rows.map((item) => (
+            <article
+              key={item.title}
+              style={{
+                padding: "22px 22px",
+                borderRadius: 20,
+                background: "#ffffff",
+                border: "1px solid #e4ebf7",
+                boxShadow: "0 10px 30px rgba(24, 67, 130, 0.06)",
+              }}
+            >
+              <h2
+                style={{
+                  margin: "0 0 10px",
+                  fontSize: 18,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {item.title}
+              </h2>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 14,
+                  lineHeight: 1.75,
+                  color: "#526176",
+                }}
+              >
+                {item.desc}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <section
+          style={{
+            marginTop: 28,
+            padding: "24px",
+            borderRadius: 20,
+            background: "#0b1b3a",
+            color: "#ffffff",
+          }}
+        >
+          <h2 style={{ margin: "0 0 12px", fontSize: 20 }}>환불 요청 방법</h2>
+          <p style={{ margin: 0, lineHeight: 1.8, color: "#d8e4f8" }}>
+            환불을 요청하실 때에는 구매자 정보, 결제일시, 상품명, 결제금액 및 환불
+            사유를 고객센터로 보내주세요. 결제내역과 다운로드 여부를 확인한 뒤
+            처리 가능 여부를 안내합니다.
+          </p>
+          <div style={{ marginTop: 16, lineHeight: 1.9 }}>
+            <div><strong>고객센터</strong> 010-5641-1225</div>
+            <div><strong>이메일</strong> cedar5325@gmail.com</div>
+          </div>
+        </section>
+
+        <div
+          style={{
+            marginTop: 24,
+            padding: "18px 20px",
+            borderRadius: 16,
+            background: "#ffffff",
+            border: "1px solid #e4ebf7",
+            color: "#526176",
+            fontSize: 13,
+            lineHeight: 1.75,
+          }}
+        >
+          본 정책보다 관계 법령에서 소비자에게 더 유리한 기준을 정하고 있는 경우에는
+          해당 법령을 우선 적용합니다. 개별 결제수단 또는 카드사의 취소·환급 처리기간은
+          결제수단별로 다를 수 있습니다.
+        </div>
+
+        <div style={{ marginTop: 26, display: "flex", gap: 14, flexWrap: "wrap" }}>
+          <Link
+            href="/materials"
+            style={{
+              padding: "13px 18px",
+              borderRadius: 12,
+              background: "#1769e8",
+              color: "#ffffff",
+              fontWeight: 800,
+              textDecoration: "none",
+            }}
+          >
+            판매 자료 확인
+          </Link>
+          <Link
+            href="/terms"
+            style={{
+              padding: "13px 18px",
+              borderRadius: 12,
+              background: "#ffffff",
+              color: "#0b1b3a",
+              fontWeight: 800,
+              textDecoration: "none",
+              border: "1px solid #dbe3ef",
+            }}
+          >
+            이용약관 확인
+          </Link>
+        </div>
       </section>
+
+      {/* DHARMA_TOSS_REVIEW_STEP3_REFUND_POLICY */}
       <DharmaBusinessFooter />
-      {styleBlock}
     </main>
   );
 }
