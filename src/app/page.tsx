@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import DharmaBusinessFooter from "../components/DharmaBusinessFooter";
 
 const FALLBACK_LAST_UPGRADE_AT = "2026-08-14T18:24:03+09:00";
@@ -32,23 +34,53 @@ function formatKstDateTime(value: string) {
 }
 
 function DigitalUpgradeClock() {
-  const raw =
+  const fallbackRaw =
     process.env.NEXT_PUBLIC_DHARMA_LAST_UPGRADE_AT ||
     FALLBACK_LAST_UPGRADE_AT;
+
+  const [raw, setRaw] = useState(fallbackRaw);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLatestMaterialTime() {
+      try {
+        const response = await fetch("/api/system/latest-material-upload", {
+          cache: "no-store",
+        });
+        const json = await response.json();
+
+        if (!cancelled && response.ok && json?.ok && json?.lastUploadAt) {
+          setRaw(String(json.lastUploadAt));
+        }
+      } catch {
+        // API 실패 시 fallback 값을 유지합니다.
+      }
+    }
+
+    loadLatestMaterialTime();
+    const timer = window.setInterval(loadLatestMaterialTime, 60_000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
   const display = formatKstDateTime(raw);
 
   return (
-    <aside className="upgradeClock" aria-label="다르마 시스템 마지막 업그레이드 시각">
+    <aside className="upgradeClock" aria-label="다르마 자료 마지막 업데이트 시각">
       <div className="upgradeClockTop">
         <span className="upgradeDot" aria-hidden="true" />
-        <span>LAST UPGRADE</span>
+        <span>LAST MATERIAL UPDATE</span>
       </div>
       <time className="upgradeDigits" dateTime={raw}>
         <span className="upgradeDate">{display.date}</span>
         <span className="upgradeTime">{display.time}</span>
         <span className="upgradeZone">KST</span>
       </time>
-      <small>DHARMA SYSTEM UPGRADE COMPLETE</small>
+      <small>DHARMA MATERIALS UPDATED</small>
     </aside>
   );
 }
