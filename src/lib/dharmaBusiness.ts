@@ -1,6 +1,8 @@
 export const DHARMA_BUSINESS = {
   // Brand / service name
   brandName: "다르마(DHARMA) AI",
+  tradeName: "다르마 교육연구소",
+  serviceName: "다르마(DHARMA) AI",
 
   // Legal business information - must match the business registration certificate.
   businessName: "다르마 교육연구소",

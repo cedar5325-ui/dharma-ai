@@ -15,18 +15,23 @@ function getServiceKey() {
 function assertEnv() {
   const url = getSupabaseUrl();
   const key = getServiceKey();
-  if (!url || !key) throw new Error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY가 .env.local에 없습니다.");
+  if (!url || !key) {
+    throw new Error("SUPABASE_URL 또는 SUPABASE_SERVICE_ROLE_KEY가 설정되지 않았습니다.");
+  }
   return { url, key };
 }
 
 async function fetchMaterial(url: string, key: string, materialId: string) {
-  const res = await fetch(`${url}/rest/v1/dharma_materials?select=*&id=eq.${encodeURIComponent(materialId)}&limit=1`, {
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-    },
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `${url}/rest/v1/dharma_materials?select=*&id=eq.${encodeURIComponent(materialId)}&limit=1`,
+    {
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      cache: "no-store",
+    }
+  );
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
@@ -37,6 +42,11 @@ async function fetchMaterial(url: string, key: string, materialId: string) {
   return rows[0] || null;
 }
 
+function createOrderId() {
+  // Toss orderId: 6~64 chars, letters/digits/-/_.
+  return `DHARMA_${Date.now()}_${crypto.randomBytes(8).toString("hex")}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { url, key } = assertEnv();
@@ -44,16 +54,26 @@ export async function POST(request: NextRequest) {
     const materialId = body.materialId || body.material_id || body.id;
 
     if (!materialId) {
-      return NextResponse.json({ ok: false, message: "materialId가 없습니다." }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, message: "materialId가 없습니다." },
+        { status: 400 }
+      );
     }
 
     const material = await fetchMaterial(url, key, materialId);
 
     if (!material) {
-      return NextResponse.json({ ok: false, message: "자료를 찾지 못했습니다." }, { status: 404 });
+      return NextResponse.json(
+        { ok: false, message: "자료를 찾지 못했습니다." },
+        { status: 404 }
+      );
     }
 
     const purchaseToken = crypto.randomBytes(24).toString("hex");
+    const orderId = createOrderId();
+
+    // Price is server-authoritative: never accept the amount from the browser.
+    const amount = Number(material.price || 20000);
 
     const res = await fetch(`${url}/rest/v1/dharma_purchases`, {
       method: "POST",
@@ -66,9 +86,10 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         material_id: material.id,
         material_title: material.title,
-        amount: material.price || 20000,
+        amount,
         status: "pending",
         purchase_token: purchaseToken,
+        toss_order_id: orderId,
       }),
       cache: "no-store",
     });
@@ -86,12 +107,21 @@ export async function POST(request: NextRequest) {
       purchaseId: purchase.id,
       purchaseToken,
       token: purchaseToken,
+      orderId,
       amount: purchase.amount,
+      materialId: material.id,
+      materialTitle: material.title,
       message: "결제 요청이 생성되었습니다.",
     });
   } catch (error) {
     return NextResponse.json(
-      { ok: false, message: error instanceof Error ? error.message : "결제 요청 생성 중 오류가 발생했습니다." },
+      {
+        ok: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "결제 요청 생성 중 오류가 발생했습니다.",
+      },
       { status: 500 }
     );
   }

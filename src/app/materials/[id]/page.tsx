@@ -108,10 +108,18 @@ export default function MaterialDetailPage() {
         throw new Error(json.message || "결제 요청 생성에 실패했습니다.");
       }
 
-      setPurchaseId(json.purchaseId || json.purchase?.id || "");
-      setPurchaseToken(json.purchaseToken || json.token || json.purchase?.purchaseToken || "");
+      const nextPurchaseId = json.purchaseId || json.purchase?.id || "";
+      const nextPurchaseToken = json.purchaseToken || json.token || json.purchase?.purchaseToken || "";
+
+      setPurchaseId(nextPurchaseId);
+      setPurchaseToken(nextPurchaseToken);
       setPaid(false);
-      setMessage(`${formatPrice(material)} 결제 요청이 생성되었습니다. Toss 승인 전에는 테스트 결제 완료를 누르세요.`);
+
+      if (!nextPurchaseId || !nextPurchaseToken) {
+        throw new Error("결제 페이지 이동에 필요한 구매정보가 없습니다.");
+      }
+
+      setMessage("결제 요청이 생성되었습니다. 아래 토스 테스트 결제하기를 누르세요.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "결제 요청 생성에 실패했습니다.");
     } finally {
@@ -119,43 +127,12 @@ export default function MaterialDetailPage() {
     }
   }
 
-  async function completeTestPayment() {
-    if (!purchaseId && !purchaseToken) {
+  function completeTestPayment() {
+    if (!purchaseId || !purchaseToken) {
       setMessage("먼저 결제 요청을 생성하세요.");
       return;
     }
-
-    setBusy("pay");
-    setMessage("");
-
-    try {
-      const response = await fetch("/api/purchases/test-complete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          purchaseId,
-          purchaseToken,
-          token: purchaseToken,
-        }),
-      });
-
-      const json = await response.json();
-
-      if (!response.ok || !json.ok) {
-        throw new Error(json.message || "테스트 결제 완료 처리에 실패했습니다.");
-      }
-
-      setPurchaseId(json.purchaseId || json.purchase?.id || purchaseId);
-      setPurchaseToken(json.purchaseToken || json.token || json.purchase?.purchaseToken || purchaseToken);
-      setPaid(true);
-      setMessage("결제 완료. 이제 원문 다운로드를 누르세요.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "테스트 결제 완료 처리에 실패했습니다.");
-    } finally {
-      setBusy("");
-    }
+    window.location.href = `/payment?purchaseId=${encodeURIComponent(purchaseId)}&token=${encodeURIComponent(purchaseToken)}`;
   }
 
   function downloadOriginal() {
@@ -254,7 +231,7 @@ export default function MaterialDetailPage() {
             </button>
 
             <button style={primaryButton} onClick={completeTestPayment} disabled={!!busy || !purchaseToken}>
-              {busy === "pay" ? "처리 중..." : "테스트 결제 완료"}
+              토스 테스트 결제하기
             </button>
 
             <button style={downloadButton} onClick={downloadOriginal} disabled={!purchaseToken}>
@@ -267,7 +244,7 @@ export default function MaterialDetailPage() {
           {purchaseToken && (
             <section style={tokenBox}>
               <strong>다운로드 권한 상태</strong>
-              <p>{paid ? "결제 완료 상태입니다." : "결제 요청이 생성되었습니다. 테스트 결제 완료를 누르세요."}</p>
+              <p>{paid ? "결제 완료 상태입니다." : "결제 요청이 생성되었습니다. 토스 테스트 결제하기를 누르세요."}</p>
             </section>
           )}
         </section>
