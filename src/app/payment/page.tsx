@@ -25,7 +25,7 @@ type PurchaseView = {
   orderId: string;
 };
 
-function PaymentPageContent() {
+function PaymentContent() {
   const searchParams = useSearchParams();
   const purchaseId = searchParams.get("purchaseId") || "";
   const token = searchParams.get("token") || "";
@@ -37,14 +37,14 @@ function PaymentPageContent() {
   const [sdkReady, setSdkReady] = useState(false);
 
   const amountLabel = useMemo(
-    () => (purchase ? `${purchase.amount.toLocaleString("ko-KR")}원` : "-"),
+    () => (purchase ? `${Number(purchase.amount).toLocaleString("ko-KR")}원` : "-"),
     [purchase]
   );
 
   useEffect(() => {
-    async function load() {
+    async function loadPurchase() {
       if (!purchaseId || !token) {
-        setMessage("상품 상세페이지에서 결제를 시작해주세요.");
+        setMessage("자료 상세페이지에서 상품을 선택한 뒤 결제를 시작해주세요.");
         setLoading(false);
         return;
       }
@@ -68,32 +68,33 @@ function PaymentPageContent() {
       }
     }
 
-    load();
+    loadPurchase();
   }, [purchaseId, token]);
 
-  async function requestCardPayment() {
+  async function openTossCardPayment() {
     if (!purchase) return;
 
     const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
+
     if (!clientKey) {
       setMessage(
-        "NEXT_PUBLIC_TOSS_CLIENT_KEY가 설정되지 않았습니다. 토스페이먼츠 테스트/심사용 클라이언트 키를 Vercel 환경변수에 설정해주세요."
+        "토스페이먼츠 TEST 클라이언트 키가 아직 설정되지 않았습니다. Vercel 환경변수 NEXT_PUBLIC_TOSS_CLIENT_KEY를 설정해주세요."
       );
       return;
     }
 
     if (!sdkReady || !window.TossPayments) {
-      setMessage("토스페이먼츠 결제 SDK를 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
+      setMessage("토스페이먼츠 결제 모듈을 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
+      return;
+    }
+
+    if (!purchase.orderId) {
+      setMessage("주문번호가 없습니다. 자료 상세페이지에서 다시 결제를 시작해주세요.");
       return;
     }
 
     if (purchase.status === "paid") {
       setMessage("이미 결제가 완료된 주문입니다.");
-      return;
-    }
-
-    if (!purchase.orderId) {
-      setMessage("주문번호가 없습니다. 상품 상세페이지에서 다시 결제를 시작해주세요.");
       return;
     }
 
@@ -109,7 +110,7 @@ function PaymentPageContent() {
         method: "CARD",
         amount: {
           currency: "KRW",
-          value: purchase.amount,
+          value: Number(purchase.amount),
         },
         orderId: purchase.orderId,
         orderName: purchase.title || "다르마(DHARMA) AI 교육자료",
@@ -118,7 +119,9 @@ function PaymentPageContent() {
       });
     } catch (error) {
       setPaying(false);
-      setMessage(error instanceof Error ? error.message : "결제창 호출 중 오류가 발생했습니다.");
+      setMessage(
+        error instanceof Error ? error.message : "토스 카드결제창 호출 중 오류가 발생했습니다."
+      );
     }
   }
 
@@ -128,7 +131,7 @@ function PaymentPageContent() {
         src="https://js.tosspayments.com/v2/standard"
         strategy="afterInteractive"
         onLoad={() => setSdkReady(true)}
-        onError={() => setMessage("토스페이먼츠 결제 SDK를 불러오지 못했습니다.")}
+        onError={() => setMessage("토스페이먼츠 결제 모듈을 불러오지 못했습니다.")}
       />
 
       <Header />
@@ -138,35 +141,41 @@ function PaymentPageContent() {
           <p style={{ color: "#2865d8", fontWeight: 800, marginBottom: 8 }}>
             DHARMA SECURE PAYMENT
           </p>
-          <h1 className="pageTitle">다르마(DHARMA) AI 결제</h1>
+          <h1 className="pageTitle">카드결제</h1>
+          <p style={{ color: "#64748b", lineHeight: 1.7 }}>
+            결제 버튼을 누르면 토스페이먼츠 카드결제창으로 연결됩니다.
+          </p>
 
           {loading && <p>결제정보를 불러오는 중입니다.</p>}
 
           {!loading && purchase && (
-            <div
+            <section
               style={{
                 marginTop: 24,
-                padding: 24,
+                padding: 26,
                 border: "1px solid #dfe7f3",
-                borderRadius: 18,
+                borderRadius: 20,
                 background: "#f8fbff",
               }}
             >
               <p><strong>상품명</strong><br />{purchase.title}</p>
               <p><strong>결제 금액</strong><br />{amountLabel}</p>
-              <p><strong>결제 방식</strong><br />건별 일회성 결제</p>
-              <p><strong>상품 제공</strong><br />결제 완료 및 구매내역 확인 후 디지털 원문 다운로드</p>
-              <p><strong>이용·다운로드 기간</strong><br />결제일로부터 30일</p>
+              <p><strong>결제 유형</strong><br />건별 일회성 결제</p>
 
               <button
+                type="button"
                 className="primaryButton"
-                onClick={requestCardPayment}
+                onClick={openTossCardPayment}
                 disabled={paying || !sdkReady}
-                style={{ marginTop: 12 }}
+                style={{ marginTop: 14, width: "100%" }}
               >
-                {paying ? "결제창 여는 중..." : `${amountLabel} 카드 결제하기`}
+                {paying
+                  ? "토스 결제창 여는 중..."
+                  : sdkReady
+                  ? `${amountLabel} 카드로 결제하기`
+                  : "결제 모듈 준비 중..."}
               </button>
-            </div>
+            </section>
           )}
 
           {message && (
@@ -174,10 +183,6 @@ function PaymentPageContent() {
               {message}
             </p>
           )}
-
-          <p style={{ marginTop: 22, fontSize: 13, color: "#66758a" }}>
-            결제금액은 서버에 저장된 실제 상품가격을 기준으로 검증한 뒤 승인됩니다.
-          </p>
         </div>
       </main>
 
@@ -186,11 +191,10 @@ function PaymentPageContent() {
   );
 }
 
-
-export default function PaymentPagePageWrapper() {
+export default function PaymentPage() {
   return (
     <Suspense fallback={<main className="section white"><p>결제정보를 불러오는 중입니다.</p></main>}>
-      <PaymentPageContent />
+      <PaymentContent />
     </Suspense>
   );
 }
