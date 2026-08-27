@@ -37,5 +37,5 @@ export const DHARMA_BUSINESS = {
     "교육관련 자문 및 평가업, 포털 및 기타 인터넷 정보 매개 서비스업",
 
   // Add only after the actual report number is issued.
-  ecommerceRegistrationNumber: "",
+  ecommerceRegistrationNumber: "제2026-광주남구-0292호",
 } as const;

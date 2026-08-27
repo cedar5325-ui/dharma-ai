@@ -64,6 +64,10 @@ export default function DharmaBusinessFooter() {
             <strong>사업자등록번호</strong> {DHARMA_BUSINESS.businessNumber}
           </div>
           <div>
+            <strong>통신판매업 신고번호</strong>{" "}
+            {DHARMA_BUSINESS.ecommerceRegistrationNumber}
+          </div>
+          <div>
             <strong>고객센터</strong> {DHARMA_BUSINESS.phone}
           </div>
           <div style={{ gridColumn: "1 / -1" }}>
