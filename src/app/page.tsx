@@ -154,14 +154,14 @@ export default function HomePage() {
         <div className="priceGrid">
           <article className="priceCard">
             <span>STANDARD REPORT</span>
-            <h3>일반 탐구보고서</h3>
+            <h3 style={{ color:"#000000", WebkitTextFillColor:"#000000" }}>일반 탐구보고서</h3>
             <strong>20,000원</strong>
             <p>1건 · 일회성 결제</p>
           </article>
 
           <article className="priceCard premiumPriceCard">
             <span>MINI PAPER</span>
-            <h3>소논문</h3>
+            <h3 style={{ color:"#000000", WebkitTextFillColor:"#000000" }}>소논문</h3>
             <strong>50,000원</strong>
             <p>1건 · 일회성 결제</p>
           </article>
@@ -554,6 +554,9 @@ export default function HomePage() {
           margin: 10px 0 8px;
           font-size: 21px;
           letter-spacing: -0.03em;
+           color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  font-weight: 900;
         }
 
         .priceCard strong {
