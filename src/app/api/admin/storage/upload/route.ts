@@ -17,7 +17,9 @@ function getServiceKey() {
 function getBucket() {
   return process.env.SUPABASE_STORAGE_BUCKET || "dharma-original-files";
 }
-
+function isAdminRequest(request: NextRequest) {
+  return request.cookies.get("dharma_admin_session")?.value === "authorized";
+}
 function assertEnv() {
   const url = getSupabaseUrl();
   const key = getServiceKey();
@@ -177,7 +179,51 @@ async function uploadObject(args: {
     throw new Error(`Storage 업로드 실패 ${response.status}: ${text.slice(0, 500)}`);
   }
 }
+async function createSignedUploadUrl(args: {
+  url: string;
+  key: string;
+  bucket: string;
+  storagePath: string;
+}) {
+  const response = await fetch(
+    `${args.url}/storage/v1/object/upload/sign/${args.bucket}/${encodePath(args.storagePath)}`,
+    {
+      method: "POST",
+      headers: {
+        apikey: args.key,
+        Authorization: `Bearer ${args.key}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        upsert: false,
+      }),
+      cache: "no-store",
+    }
+  );
 
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(
+      `Storage 업로드 URL 생성 실패 ${response.status}: ${text.slice(0, 500)}`
+    );
+  }
+
+  const data = await response.json();
+
+  const signedPath =
+    data?.url ||
+    data?.signedURL ||
+    data?.signedUrl ||
+    "";
+
+  if (!signedPath) {
+    throw new Error("Supabase signed upload URL을 받지 못했습니다.");
+  }
+
+  return signedPath.startsWith("http")
+    ? signedPath
+    : `${args.url}/storage/v1${signedPath.startsWith("/") ? "" : "/"}${signedPath}`;
+}
 async function insertMaterial(args: { url: string; key: string; row: any }) {
   const response = await fetch(`${args.url}/rest/v1/dharma_materials`, {
     method: "POST",
@@ -203,6 +249,225 @@ export async function POST(request: NextRequest) {
   try {
     const { url, key } = assertEnv();
     const bucket = getBucket();
+       if (!isAdminRequest(request)) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "관리자 로그인 후 이용하세요.",
+        },
+        { status: 401 }
+      );
+    }
+     const requestContentType =
+      request.headers.get("content-type") || "";
+
+    if (requestContentType.includes("application/json")) {
+      const payload = await request.json();
+        // STEP 1: Supabase 직접 업로드용 URL 생성
+      if (payload?.action === "prepare") {
+        const originalName = String(payload.fileName || "");
+        const fileSize = Number(payload.size || 0);
+
+        if (!originalName) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: "파일명이 없습니다.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const ext = getExtension(originalName);
+
+        if (!SUPPORTED_EXTENSIONS.includes(ext)) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: `지원하지 않는 확장자입니다: ${ext}`,
+            },
+            { status: 400 }
+          );
+        }
+
+        const MAX_DIRECT_UPLOAD_BYTES =
+          50 * 1024 * 1024;
+
+        if (
+          !Number.isFinite(fileSize) ||
+          fileSize <= 0 ||
+          fileSize > MAX_DIRECT_UPLOAD_BYTES
+        ) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message:
+                "현재 관리자 직접 업로드는 파일당 최대 50MB까지 지원합니다.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const storagePath =
+          makeSafeStoragePath(ext);
+
+        const contentType =
+          String(payload.mimeType || "") ||
+          mimeFromExtension(ext);
+
+        const signedUrl =
+          await createSignedUploadUrl({
+            url,
+            key,
+            bucket,
+            storagePath,
+          });
+
+        return NextResponse.json({
+          ok: true,
+          action: "prepare",
+          signedUrl,
+          bucket,
+          storagePath,
+          contentType,
+          fileName: originalName,
+          size: fileSize,
+        });
+      }
+       // STEP 2: Supabase 업로드 완료 후 DB 등록
+      if (payload?.action === "finalize") {
+        const originalName =
+          String(payload.fileName || "");
+
+        const storagePath =
+          String(payload.storagePath || "");
+
+        const fileSize =
+          Number(payload.size || 0);
+
+        if (!originalName || !storagePath) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: "파일명 또는 Storage 경로가 없습니다.",
+            },
+            { status: 400 }
+          );
+        }
+
+        if (!storagePath.startsWith("uploads/")) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: "올바르지 않은 Storage 경로입니다.",
+            },
+            { status: 400 }
+          );
+        }
+
+        const ext =
+          getExtension(originalName);
+
+        if (!SUPPORTED_EXTENSIONS.includes(ext)) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: `지원하지 않는 확장자입니다: ${ext}`,
+            },
+            { status: 400 }
+          );
+        }
+
+        const contentType =
+          String(payload.mimeType || "") ||
+          mimeFromExtension(ext);
+
+        const subject =
+          inferSubject(originalName);
+
+        const unit =
+          inferUnit(originalName, subject);
+
+        const keywords =
+          inferKeywords(
+            originalName,
+            subject,
+            unit
+          );
+
+        const fileType =
+          fileTypeFromExtension(ext);
+
+        const priceInfo =
+          getPriceInfo(originalName);
+
+        const row =
+          await insertMaterial({
+            url,
+            key,
+            row: {
+              title:
+                stripExtension(originalName),
+
+              subject,
+              unit,
+              keywords,
+
+              file_type: fileType,
+              file_name: originalName,
+              mime_type: contentType,
+
+              size_bytes: fileSize,
+
+              storage_bucket: bucket,
+              storage_path: storagePath,
+
+              price: priceInfo.price,
+              price_label:
+                priceInfo.priceLabel,
+
+              description:
+                priceInfo.description,
+
+              download_policy:
+                priceInfo.downloadPolicy,
+
+              is_active: true,
+
+              updated_at:
+                new Date().toISOString(),
+            },
+          });
+
+        return NextResponse.json({
+          ok: true,
+          action: "finalize",
+
+          uploaded: [
+            {
+              fileName: originalName,
+              storagePath,
+              fileType,
+              size: fileSize,
+              price: priceInfo.price,
+              priceLabel:
+                priceInfo.priceLabel,
+              sononmun:
+                isSononmun(originalName),
+            },
+          ],
+
+          saved: [row],
+        });
+      }
+       return NextResponse.json(
+        {
+          ok: false,
+          message: "알 수 없는 업로드 작업입니다.",
+        },
+        { status: 400 }
+      );
+    }
     const formData = await request.formData();
     const files = formData.getAll("files").filter((item): item is File => item instanceof File);
 

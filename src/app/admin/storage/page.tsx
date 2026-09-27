@@ -15,33 +15,96 @@ export default function AdminStoragePage() {
   const [logs, setLogs] = useState<UploadLog[]>([]);
   const [result, setResult] = useState<any>(null);
 
-  async function uploadOneFile(file: File) {
-    const formData = new FormData();
-    formData.append("files", file);
-
-    const response = await fetch("/api/admin/storage/upload", {
+ async function uploadOneFile(file: File) {
+  // 1. Vercel에서 Supabase signed upload URL 발급
+  const prepareResponse = await fetch(
+    "/api/admin/storage/upload",
+    {
       method: "POST",
-      body: formData,
-    });
-
-    let json: any = null;
-
-    try {
-      json = await response.json();
-    } catch {
-      json = {
-        ok: false,
-        message: "업로드 응답을 읽지 못했습니다.",
-      };
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "prepare",
+        fileName: file.name,
+        size: file.size,
+        mimeType: file.type,
+      }),
     }
+  );
 
-    if (!response.ok || !json.ok) {
-      throw new Error(json?.failed?.[0]?.message || json?.message || "업로드 실패");
-    }
+  const prepareJson = await prepareResponse.json();
 
-    return json;
+  if (!prepareResponse.ok || !prepareJson.ok) {
+    throw new Error(
+      prepareJson?.message ||
+      "업로드 URL 생성에 실패했습니다."
+    );
   }
 
+  // 2. 원본 파일은 Vercel을 거치지 않고 Supabase로 직접 업로드
+  const uploadForm = new FormData();
+
+  uploadForm.append("cacheControl", "3600");
+  uploadForm.append("", file);
+
+  const storageResponse = await fetch(
+    prepareJson.signedUrl,
+    {
+      method: "PUT",
+      headers: {
+        "x-upsert": "false",
+      },
+      body: uploadForm,
+    }
+  );
+
+  if (!storageResponse.ok) {
+    const text = await storageResponse
+      .text()
+      .catch(() => "");
+
+    throw new Error(
+      `Supabase 직접 업로드 실패 ${storageResponse.status}: ${text.slice(0, 500)}`
+    );
+  }
+
+  // 3. 업로드 완료 후 메타데이터만 Vercel API로 전송
+  const finalizeResponse = await fetch(
+    "/api/admin/storage/upload",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "finalize",
+        fileName: file.name,
+        size: file.size,
+        mimeType:
+          file.type ||
+          prepareJson.contentType,
+        storagePath:
+          prepareJson.storagePath,
+      }),
+    }
+  );
+
+  const finalizeJson =
+    await finalizeResponse.json();
+
+  if (
+    !finalizeResponse.ok ||
+    !finalizeJson.ok
+  ) {
+    throw new Error(
+      finalizeJson?.message ||
+      "자료 DB 등록에 실패했습니다."
+    );
+  }
+
+  return finalizeJson;
+}
   async function uploadFilesSequentially() {
     const selectedFiles = fileInputRef.current?.files;
 
