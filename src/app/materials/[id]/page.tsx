@@ -119,7 +119,7 @@ export default function MaterialDetailPage() {
         throw new Error("결제 페이지 이동에 필요한 구매정보가 없습니다.");
       }
 
-      setMessage("결제 요청이 생성되었습니다. 아래 토스 테스트 결제하기를 누르세요.");
+      setMessage("결제 요청이 생성되었습니다. 아래 결제하기 버튼을 눌러 결제를 진행하세요.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "결제 요청 생성에 실패했습니다.");
     } finally {
@@ -127,7 +127,7 @@ export default function MaterialDetailPage() {
     }
   }
 
-  function completeTestPayment() {
+  function proceedToPayment() {
     if (!purchaseId || !purchaseToken) {
       setMessage("먼저 결제 요청을 생성하세요.");
       return;
@@ -139,7 +139,7 @@ export default function MaterialDetailPage() {
     if (!material) return;
 
     if (!purchaseToken) {
-      setMessage("먼저 결제 요청 후 테스트 결제 완료를 진행하세요.");
+      setMessage("먼저 결제를 완료한 후 원문을 다운로드하세요.");
       return;
     }
 
@@ -230,8 +230,8 @@ export default function MaterialDetailPage() {
               {busy === "create" ? "결제 요청 생성 중..." : getPaymentButtonLabel(material)}
             </button>
 
-            <button style={primaryButton} onClick={completeTestPayment} disabled={!!busy || !purchaseToken}>
-              토스 테스트 결제하기
+            <button style={primaryButton} onClick={proceedToPayment} disabled={!!busy || !purchaseToken}>
+              결제하기
             </button>
 
             <button style={downloadButton} onClick={downloadOriginal} disabled={!purchaseToken}>
@@ -244,7 +244,7 @@ export default function MaterialDetailPage() {
           {purchaseToken && (
             <section style={tokenBox}>
               <strong>다운로드 권한 상태</strong>
-              <p>{paid ? "결제 완료 상태입니다." : "결제 요청이 생성되었습니다. 토스 테스트 결제하기를 누르세요."}</p>
+              <p>{paid ? "결제 완료 상태입니다." : "결제 요청이 생성되었습니다. 결제하기를 눌러 결제를 진행하세요."}</p>
             </section>
           )}
         </section>
