@@ -117,12 +117,31 @@ function PaymentContent() {
         successUrl: `${origin}/payment/success`,
         failUrl: `${origin}/payment/fail`,
       });
-    } catch (error) {
-      setPaying(false);
-      setMessage(
-        error instanceof Error ? error.message : "토스 카드결제창 호출 중 오류가 발생했습니다."
-      );
-    }
+    } catch (error: unknown) {
+  setPaying(false);
+
+  console.error("Toss payment error:", error);
+
+  if (error && typeof error === "object") {
+    const tossError = error as {
+      code?: string;
+      message?: string;
+    };
+
+    const code = tossError.code || "UNKNOWN";
+    const message =
+      tossError.message || "알 수 없는 에러가 발생했습니다.";
+
+    setMessage(`[${code}] ${message}`);
+    return;
+  }
+
+  setMessage(
+    error instanceof Error
+      ? error.message
+      : "알 수 없는 에러가 발생했습니다."
+  );
+}
   }
 
   return (
