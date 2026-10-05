@@ -61,7 +61,9 @@ export default function MaterialDetailPage() {
   const [purchaseToken, setPurchaseToken] = useState("");
   const [paid, setPaid] = useState(false);
   const [busy, setBusy] = useState("");
-
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   async function loadMaterial() {
     setLoading(true);
     setMessage("");
@@ -86,10 +88,41 @@ export default function MaterialDetailPage() {
   }
 
   async function createPurchase() {
-    if (!material) return;
+  if (!material) return;
 
-    setBusy("create");
-    setMessage("");
+  const name = customerName.trim();
+  const phone = customerPhone.trim();
+  const email = customerEmail.trim();
+
+  if (!name) {
+    setMessage("구매자 이름을 입력해주세요.");
+    return;
+  }
+
+  if (!phone) {
+    setMessage("휴대전화번호를 입력해주세요.");
+    return;
+  }
+
+  const phoneDigits = phone.replace(/[^0-9]/g, "");
+
+  if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+    setMessage("휴대전화번호를 정확하게 입력해주세요.");
+    return;
+  }
+
+  if (!email) {
+    setMessage("이메일을 입력해주세요.");
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setMessage("이메일 주소를 정확하게 입력해주세요.");
+    return;
+  }
+
+  setBusy("create");
+  setMessage("");
 
     try {
       const response = await fetch("/api/purchases/create", {
@@ -99,6 +132,9 @@ export default function MaterialDetailPage() {
         },
         body: JSON.stringify({
           materialId: material.id,
+          customerName: customerName.trim(),
+          customerPhone: customerPhone.trim(),
+          customerEmail: customerEmail.trim(),
         }),
       });
 
@@ -224,7 +260,54 @@ export default function MaterialDetailPage() {
           </section>
 
           <p style={keywords}>핵심어: {keywordText}</p>
+          <section style={customerInfoBox}>
+  <h3 style={{ marginTop: 0, marginBottom: 18 }}>
+    구매자 정보
+  </h3>
 
+  <label style={fieldLabel}>
+    이름
+    <input
+      type="text"
+      value={customerName}
+      onChange={(e) => setCustomerName(e.target.value)}
+      placeholder="구매자 이름"
+      autoComplete="name"
+      style={customerInput}
+      disabled={!!purchaseToken}
+    />
+  </label>
+
+  <label style={fieldLabel}>
+    휴대전화번호
+    <input
+      type="tel"
+      value={customerPhone}
+      onChange={(e) => setCustomerPhone(e.target.value)}
+      placeholder="010-1234-5678"
+      autoComplete="tel"
+      style={customerInput}
+      disabled={!!purchaseToken}
+    />
+  </label>
+
+  <label style={fieldLabel}>
+    이메일
+    <input
+      type="email"
+      value={customerEmail}
+      onChange={(e) => setCustomerEmail(e.target.value)}
+      placeholder="example@email.com"
+      autoComplete="email"
+      style={customerInput}
+      disabled={!!purchaseToken}
+    />
+  </label>
+
+  <p style={customerNotice}>
+    결제 확인 및 자료 이용 안내를 위해 필요한 정보를 입력해주세요.
+  </p>
+</section>
           <div style={actions}>
             <button style={primaryButton} onClick={createPurchase} disabled={!!busy}>
               {busy === "create" ? "결제 요청 생성 중..." : getPaymentButtonLabel(material)}
@@ -398,7 +481,39 @@ const keywords = {
   marginTop: 22,
   fontSize: 18,
 };
+const customerInfoBox = {
+  marginTop: 28,
+  marginBottom: 24,
+  padding: 24,
+  border: "1px solid #dbe7f3",
+  borderRadius: 20,
+  background: "#ffffff",
+};
 
+const fieldLabel = {
+  display: "block",
+  marginBottom: 16,
+  fontWeight: 700,
+};
+
+const customerInput = {
+  display: "block",
+  width: "100%",
+  boxSizing: "border-box" as const,
+  marginTop: 8,
+  padding: "14px 16px",
+  border: "1px solid #cbd5e1",
+  borderRadius: 12,
+  fontSize: 16,
+  fontWeight: 400,
+};
+
+const customerNotice = {
+  margin: "8px 0 0",
+  fontSize: 13,
+  lineHeight: 1.6,
+  color: "#64748b",
+};
 const actions = {
   display: "flex",
   gap: 14,

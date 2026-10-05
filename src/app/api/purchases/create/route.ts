@@ -52,7 +52,35 @@ export async function POST(request: NextRequest) {
     const { url, key } = assertEnv();
     const body = await request.json().catch(() => ({}));
     const materialId = body.materialId || body.material_id || body.id;
+    const customerName = String(body.customerName || "").trim();
+    const customerPhone = String(body.customerPhone || "").trim();
+    const customerEmail = String(body.customerEmail || "").trim();
 
+    if (!customerName) {
+      return NextResponse.json(
+       { ok: false, message: "구매자 이름을 입력해주세요." },
+       { status: 400 }
+      );
+     }
+
+    const phoneDigits = customerPhone.replace(/[^0-9]/g, "");
+
+    if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+  return NextResponse.json(
+    { ok: false, message: "휴대전화번호를 정확하게 입력해주세요." },
+    { status: 400 }
+  );
+     }
+
+    if (
+      !customerEmail ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)
+) {
+      return NextResponse.json(
+        { ok: false, message: "이메일 주소를 정확하게 입력해주세요." },
+        { status: 400 }
+  );
+}
     if (!materialId) {
       return NextResponse.json(
         { ok: false, message: "materialId가 없습니다." },
@@ -83,14 +111,19 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
         Prefer: "return=representation",
       },
-      body: JSON.stringify({
-        material_id: material.id,
-        material_title: material.title,
-        amount,
-        status: "pending",
-        purchase_token: purchaseToken,
-        toss_order_id: orderId,
-      }),
+     body: JSON.stringify({
+  material_id: material.id,
+  material_title: material.title,
+  amount,
+  status: "pending",
+  purchase_token: purchaseToken,
+  toss_order_id: orderId,
+
+  customer_name: customerName,
+  customer_phone: customerPhone,
+  customer_email: customerEmail,
+}),       
+
       cache: "no-store",
     });
 
