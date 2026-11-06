@@ -234,55 +234,90 @@ export default function PricingPage() {
         </div>
         <div className="grid">
           <article className="card">
-            <div className="badge">STANDARD</div>
-            <h2>일반 탐구보고서</h2>
-            <div className="price">20,000원</div>
-            <p>교과 연계 탐구, 도서 연계 탐구, 교육과정 기반 심화 탐구보고서를 1건 단위로 이용합니다.</p>
-            <ul>
-              <li>HWP/HWPX/DOCX/PDF 원문 파일 다운로드</li>
-              <li>교과 개념과 탐구 주제 연계</li>
-              <li>자료 1건 단위 결제</li>
-            </ul>
-          </article>
+  <div className="badge">STANDARD</div>
+  <h2>세특</h2>
+  <div className="price">20,000원</div>
+  <p>
+    파일명 또는 제목에 ‘세특’이 포함된 자료는
+    20,000원으로 분류됩니다.
+  </p>
+  <ul>
+    <li>세특 연계 원문 파일 전체 다운로드</li>
+    <li>교과·진로 연계 탐구자료</li>
+    <li>자료 1건 단위 결제</li>
+  </ul>
+</article>
 
           <article className="card">
-            <div className="badge redBadge">PREMIUM</div>
-            <h2>소논문 자료</h2>
-            <div className="price premium">50,000원</div>
-            <p>파일명 또는 제목에 ‘소논문’이 포함된 프리미엄 자료는 50,000원으로 분류됩니다.</p>
-            <ul>
-              <li>소논문 원문 파일 전체 다운로드</li>
-              <li>심화 탐구 구조와 분석 흐름 중심</li>
-              <li>프리미엄 원문 자료로 별도 가격 적용</li>
-            </ul>
-          </article>
+  <div className="badge">STANDARD</div>
+  <h2>일반 자료</h2>
+  <div className="price">50,000원</div>
+  <p>
+    파일명 또는 제목에 ‘세특’이나 ‘소논문’이 포함되지 않은
+    일반 탐구·학습·심화 자료는 50,000원으로 분류됩니다.
+  </p>
+  <ul>
+    <li>원문 파일 전체 다운로드</li>
+    <li>교과·진로·심화 탐구 자료 포함</li>
+    <li>자료 1건 단위 결제</li>
+  </ul>
+</article>
+
+<article className="card">
+  <div className="badge redBadge">PREMIUM</div>
+  <h2>소논문</h2>
+  <div className="price premium">80,000원</div>
+  <p>
+    파일명 또는 제목에 ‘소논문’이 포함된 프리미엄 자료는
+    80,000원으로 분류됩니다.
+  </p>
+  <ul>
+    <li>소논문 원문 파일 전체 다운로드</li>
+    <li>연구문제·방법론·분석 구조 중심</li>
+    <li>프리미엄 원문 자료로 별도 가격 적용</li>
+  </ul>
+</article>
         </div>
 
         <article className="card">
           <h2>가격 적용 기준</h2>
           <table className="table">
-            <thead>
-              <tr>
-                <th>자료 구분</th>
-                <th>가격</th>
-                <th>적용 기준</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>일반 탐구보고서</td>
-                <td>20,000원</td>
-                <td>파일명 또는 제목에 ‘소논문’이 포함되지 않은 일반 탐구보고서 자료</td>
-              </tr>
-              <tr>
-                <td>소논문 자료</td>
-                <td>50,000원</td>
-                <td>파일명 또는 제목에 ‘소논문’이 포함된 프리미엄 자료</td>
-              </tr>
-            </tbody>
-          </table>
+  <thead>
+    <tr>
+      <th>자료 구분</th>
+      <th>가격</th>
+      <th>적용 기준</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>세특</td>
+      <td>20,000원</td>
+      <td>
+        파일명 또는 제목에 ‘세특’이 포함된 자료
+      </td>
+    </tr>
+
+    <tr>
+      <td>일반 자료</td>
+      <td>50,000원</td>
+      <td>
+        파일명 또는 제목에 ‘세특’과 ‘소논문’이 포함되지 않은 모든 자료
+      </td>
+    </tr>
+
+    <tr>
+      <td>소논문</td>
+      <td>80,000원</td>
+      <td>
+        파일명 또는 제목에 ‘소논문’이 포함된 프리미엄 자료
+      </td>
+    </tr>
+  </tbody>
+</table>
           <div className="notice">
-            월 구독과 자동결제는 없습니다. 결제 완료 후 선택한 자료 1건에 대한 다운로드 권한이 부여됩니다.
+            월 구독과 자동결제는 없습니다.  자료는 건별 결제이며, 결제 완료 후 선택한 자료 1건의 원문을 다운로드할 수 있습니다.
           </div>
           <a className="cta" href="/materials">자료 선택하러 가기</a>
         </article>

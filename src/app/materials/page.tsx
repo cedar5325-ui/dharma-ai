@@ -140,9 +140,19 @@ export default function MaterialsPage() {
           <div className="grid">
             {materials.map((item) => (
               <a key={item.id} className="card" href={"/materials/" + item.id}>
-                <div className={Number(item.price || 0) >= 50000 ? "type premium" : "type"}>
-                  {Number(item.price || 0) >= 50000 ? "소논문" : item.fileType || "파일"}
-                </div>
+                <div
+  className={
+    `${item.title || ""} ${item.fileName || ""}`.includes("소논문")
+      ? "type premium"
+      : "type"
+  }
+>
+  {`${item.title || ""} ${item.fileName || ""}`.includes("소논문")
+    ? "소논문"
+    : `${item.title || ""} ${item.fileName || ""}`.includes("세특")
+    ? "세특"
+    : "일반 자료"}
+</div>
                 <h3>{item.title || item.fileName || "제목 없는 자료"}</h3>
                 <p>{item.subject || "분류 대기"} · {item.unit || "단원 미분류"}</p>
                 <p className="fileName">{item.fileName}</p>

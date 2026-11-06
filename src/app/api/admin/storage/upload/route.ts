@@ -49,19 +49,33 @@ function isSononmun(name: string) {
 }
 
 function getPriceInfo(fileName: string) {
-  if (isSononmun(fileName)) {
+  const text = fileName || "";
+
+  // 1. 소논문 → 80,000원
+  if (isSononmun(text)) {
     return {
-      price: 50000,
-      priceLabel: "50,000원",
+      price: 80000,
+      priceLabel: "80,000원",
       description: "소논문으로 분류된 프리미엄 원문 다운로드 자료입니다.",
       downloadPolicy: "결제 완료 후 소논문 원문 파일 전체를 그대로 다운로드합니다.",
     };
   }
 
+  // 2. 세특 → 20,000원
+  if (text.includes("세특")) {
+    return {
+      price: 20000,
+      priceLabel: "20,000원",
+      description: "세특으로 분류된 원문 다운로드 자료입니다.",
+      downloadPolicy: "결제 완료 후 세특 원문 파일 전체를 그대로 다운로드합니다.",
+    };
+  }
+
+  // 3. 나머지 모든 일반 자료 → 50,000원
   return {
-    price: 20000,
-    priceLabel: "20,000원",
-    description: "Supabase Storage에 등록된 원문 다운로드 자료입니다.",
+    price: 50000,
+    priceLabel: "50,000원",
+    description: "일반 자료로 분류된 원문 다운로드 자료입니다.",
     downloadPolicy: "결제 완료 후 원문 파일 전체를 그대로 다운로드합니다.",
   };
 }
@@ -559,7 +573,7 @@ export async function POST(request: NextRequest) {
       failed,
       message:
         failed.length === 0
-          ? "자료 등록이 완료되었습니다. 파일명에 소논문이 포함된 자료는 50,000원으로 등록됩니다."
+          ? "자료 등록이 완료되었습니다. 세특은 20,000원, 일반 자료는 50,000원, 소논문은 80,000원으로 등록됩니다."
           : "일부 파일 업로드에 실패했습니다.",
     });
   } catch (error) {

@@ -211,7 +211,11 @@ export default function AdminStoragePage() {
         <article className="statusCard">
           <span>02</span>
           <h2>가격 자동 분류</h2>
-          <p>일반 자료는 20,000원, 파일명에 소논문이 포함되면 50,000원으로 등록됩니다.</p>
+          <p>
+           파일명 또는 제목에 세특이 포함되면 20,000원,
+           소논문이 포함되면 80,000원,
+           그 외 자료는 50,000원으로 등록됩니다.
+          </p>
         </article>
 
         <article className="statusCard">
@@ -237,7 +241,7 @@ export default function AdminStoragePage() {
           </div>
           <div className="priceGuide">
             <strong>가격 기준</strong>
-            <span>일반 20,000원 · 소논문 50,000원</span>
+            <span>세특 20,000원 · 일반 자료 50,000원 · 소논문 80,000원</span>
           </div>
         </div>
 
@@ -310,7 +314,10 @@ export default function AdminStoragePage() {
         <ol>
           <li>자료 JSON 확인에서 업로드 자료가 보이는지 확인합니다.</li>
           <li>고객 자료 화면에서 제목, 파일 형식, 가격이 정상 표시되는지 확인합니다.</li>
-          <li>소논문 자료는 50,000원, 일반 자료는 20,000원인지 확인합니다.</li>
+          <li>
+           세특 자료는 20,000원, 일반 자료는 50,000원,
+           소논문 자료는 80,000원인지 확인합니다.
+          </li>
           <li>자료 상세 화면에서 결제 요청 → 테스트 결제 완료 → 원문 다운로드를 확인합니다.</li>
         </ol>
 
