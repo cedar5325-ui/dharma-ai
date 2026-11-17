@@ -139,9 +139,9 @@ export default function HomePage() {
         </div>
 
         <h1>
-          교과·도서 연계
+          중고교 수행평가를 위한
           <br />
-          심화 탐구 자료
+          교과,도서 연계 심화 탐구 보고서
         </h1>
 
         <p className="heroText">
