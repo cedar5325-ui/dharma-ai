@@ -86,6 +86,37 @@ function DigitalUpgradeClock() {
 }
 
 export default function HomePage() {
+  const [homeSubjects, setHomeSubjects] = useState<
+    Array<{ subject: string; count: number }>
+  >([]);
+
+  useEffect(() => {
+    async function loadHomeSubjects() {
+      try {
+        const response = await fetch(
+          `/api/materials/subjects?t=${Date.now()}`,
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        setHomeSubjects(
+          Array.isArray(data.subjects)
+            ? data.subjects
+            : []
+        );
+      } catch (error) {
+        console.error("홈페이지 과목 목록 조회 오류:", error);
+      }
+    }
+
+    loadHomeSubjects();
+  }, []);
+
   return (
     <main className="page">
       <header className="header">
@@ -143,7 +174,35 @@ export default function HomePage() {
           </article>
         </div>
       </section>
+       <section className="subjectSection">
+        <div className="subjectSectionHead">
+          <div>
+            <div className="eyebrow">DHARMA SUBJECTS</div>
+            <h2>과목별 탐구 자료</h2>
+            <p>
+              실제 등록된 자료를 기준으로 과목이 자동 업데이트됩니다.
+              원하는 과목을 선택해 바로 자료를 확인하세요.
+            </p>
+          </div>
 
+          <a className="allMaterialsLink" href="/materials">
+            전체 자료 보기
+          </a>
+        </div>
+
+        <div className="homeSubjectChips">
+          {homeSubjects.map((item) => (
+            <a
+              key={item.subject}
+              className="homeSubjectChip"
+              href={`/materials?subject=${encodeURIComponent(item.subject)}`}
+            >
+              <strong>{item.subject}</strong>
+              <span>{item.count.toLocaleString("ko-KR")}개</span>
+            </a>
+          ))}
+        </div>
+      </section>
       <section className="pricingBand" aria-labelledby="one-time-pricing-title">
         <div className="pricingIntro">
           <small>ONE-TIME PAYMENT ONLY</small>
@@ -510,7 +569,81 @@ export default function HomePage() {
           color: #3e5578;
           margin: 0;
         }
+        .subjectSection {
+  max-width: 1440px;
+  margin: 0 auto 34px;
+  padding: 44px 6vw;
+}
 
+.subjectSectionHead {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.subjectSectionHead h2 {
+  margin: 0 0 12px;
+  font-size: 44px;
+  letter-spacing: -0.04em;
+}
+
+.subjectSectionHead p {
+  margin: 0;
+  color:#3e5578;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.allMaterialsLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background:#07152f;
+  color: white;
+  text-decoration: none;
+  font-weight: 950;
+}
+
+.homeSubjectChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.homeSubjectChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid#d8e7ff;
+  color:#07152f;
+  text-decoration: none;
+  box-shadow: 0 10px 28pxrgba(17,101,232,.07);
+  transition: .18s ease;
+}
+
+.homeSubjectChip:hover {
+  transform: translateY(-2px);
+  border-color:#1977f3;
+  box-shadow: 0 14px 32pxrgba(17,101,232,.14);
+}
+
+.homeSubjectChip strong {
+  font-weight: 950;
+}
+
+.homeSubjectChip span {
+  color:#1977f3;
+  font-size: 13px;
+  font-weight: 900;
+}
         .pricingBand {
           max-width: 1440px;
           margin: 6px auto 28px;

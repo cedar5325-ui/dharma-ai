@@ -72,6 +72,13 @@ export default function MaterialsPage() {
  
   useEffect(() => {
   loadSubjects();
+
+  const params = new URLSearchParams(window.location.search);
+  const initialSubject = params.get("subject");
+
+  if (initialSubject) {
+    setSubject(initialSubject);
+  }
 }, []);
   useEffect(() => {
     loadMaterials();
