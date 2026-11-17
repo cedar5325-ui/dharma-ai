@@ -84,8 +84,10 @@ const todayDownloadCount = items.filter(
   (item) => isSameLocalDate(item.downloadedAt)
 ).length;
 
-const pendingCount = items.filter(
-  (item) => item.status === "pending"
+const todayPendingCount = items.filter(
+  (item) =>
+    item.status === "pending" &&
+    isSameLocalDate(item.createdAt)
 ).length;
  return (
   <>
@@ -128,9 +130,11 @@ const pendingCount = items.filter(
   </div>
 
   <div style={summaryCard}>
-    <div style={summaryLabel}>결제대기</div>
-    <div style={summaryValue}>{pendingCount}건</div>
-  </div>
+  <div style={summaryLabel}>오늘 결제대기</div>
+  <div style={summaryValue}>{todayPendingCount}건</div>
+</div>
+
+  
 </div>
       <div
         style={{

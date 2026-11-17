@@ -2,20 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const SUBJECTS = [
-  "전체",
-  "생명과학",
-  "화학",
-  "윤리와사상",
-  "사회문제탐구",
-  "수학",
-  "국어",
-  "영어",
-  "물리",
-  "지구과학",
-  "정보",
-  "분류 대기",
-];
+
 
 function formatBytes(value: number | null | undefined) {
   if (!value) return "";
@@ -26,13 +13,34 @@ function formatBytes(value: number | null | undefined) {
 
 export default function MaterialsPage() {
   const [subject, setSubject] = useState("전체");
-  const [query, setQuery] = useState("");
+  const [subjects, setSubjects] = useState<string[]>([]);
   const [materials, setMaterials] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const loadSubjects = async () => {
+    try {
+      const response = await fetch(`/api/materials/subjects?t=${Date.now()}`, {
+        cache: "no-store",
+      });
 
+      if (!response.ok) {
+        throw new Error("과목 목록을 불러오지 못했습니다.");
+      }
+
+      const data = await response.json();
+
+      const subjectNames = Array.isArray(data.subjects)
+        ? data.subjects.map((item: { subject: string }) => item.subject)
+        : [];
+
+      setSubjects(["전체", ...subjectNames]);
+    } catch (error) {
+      console.error("과목 목록 조회 오류:", error);
+      setSubjects(["전체"]);
+    }
+  };
   async function loadMaterials() {
     setLoading(true);
     setMessage("");
@@ -40,7 +48,7 @@ export default function MaterialsPage() {
     try {
       const params = new URLSearchParams();
       if (subject && subject !== "전체") params.set("subject", subject);
-      if (query.trim()) params.set("query", query.trim());
+      
 
       const response = await fetch("/api/materials?" + params.toString() + "&t=" + Date.now(), {
         cache: "no-store",
@@ -61,7 +69,10 @@ export default function MaterialsPage() {
       setLoading(false);
     }
   }
-
+ 
+  useEffect(() => {
+  loadSubjects();
+}, []);
   useEffect(() => {
     loadMaterials();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +101,7 @@ export default function MaterialsPage() {
       <section className="box">
         <h2>1. 관심 과목 선택</h2>
         <div className="chips">
-          {SUBJECTS.map((item) => (
+          {subjects.map((item) => (
             <button
               key={item}
               className={item === subject ? "chip active" : "chip"}
@@ -102,24 +113,10 @@ export default function MaterialsPage() {
         </div>
       </section>
 
-      <section className="box">
-        <h2>2. 자료 제목 검색</h2>
-        <label>제목 / 핵심어 검색</label>
-        <div className="searchRow">
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") loadMaterials();
-            }}
-            placeholder="예: 고전과윤리, 소논문, 이성질체"
-          />
-          <button onClick={loadMaterials}>자료 보기</button>
-        </div>
-      </section>
+      
 
       <section className="list">
-        <div className="label">SUPABASE STORAGE MATERIAL TITLES</div>
+        <div className="label">2. 선택 과목 자료</div>
         <h2>{subject === "전체" ? "전체 자료" : subject + " 자료"}</h2>
 
         <p className="summary">

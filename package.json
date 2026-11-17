@@ -8,16 +8,17 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "@tosspayments/tosspayments-sdk": "latest",
+    "googleapis": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest",
-    "googleapis": "latest",
-    "@tosspayments/tosspayments-sdk": "latest"
+    "react-dom": "latest"
   },
   "devDependencies": {
-    "typescript": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@types/react-dom": "latest",
+    "typescript": "latest"
   }
 }

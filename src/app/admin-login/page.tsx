@@ -1,172 +1,244 @@
-﻿"use client";
+'use client';
 
-import { useState } from "react";
+import type { CSSProperties, FormEvent } from 'react';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function AdminLoginPage() {
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+function AdminLoginLoading() {
+  return (
+    <main style={styles.page}>
+      <section style={styles.card} aria-live="polite">
+        <p style={styles.eyebrow}>DHARMA AI ADMIN</p>
+        <h1 style={styles.title}>관리자 로그인 준비 중</h1>
+        <p style={styles.description}>잠시만 기다려 주세요.</p>
+      </section>
+    </main>
+  );
+}
 
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+function AdminLoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const requestedNext = searchParams.get('next') ?? '/admin';
+  const nextPath = requestedNext.startsWith('/admin') ? requestedNext : '/admin';
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true);
-    setMessage("");
+    setMessage('');
+
+    if (!password.trim()) {
+      setMessage('관리자 비밀번호를 입력해 주세요.');
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        cache: 'no-store',
+        body: JSON.stringify({
+          password,
+          adminPassword: password,
+        }),
       });
 
-      const json = await response.json().catch(() => ({}));
+      const data = (await response.json().catch(() => null)) as
+        | { ok?: boolean; message?: string; error?: string }
+        | null;
 
-      if (!response.ok || json.ok === false) {
-        throw new Error(json.message || "관리자 로그인에 실패했습니다.");
+      if (!response.ok || data?.ok === false) {
+        throw new Error(
+          data?.message ?? data?.error ?? '관리자 비밀번호가 올바르지 않습니다.',
+        );
       }
 
-      window.location.href = "/admin/storage";
+      router.replace(nextPath);
+      router.refresh();
     } catch (error) {
       setMessage(
         error instanceof Error
           ? error.message
-          : "관리자 로그인 중 오류가 발생했습니다."
+          : '로그인 처리 중 오류가 발생했습니다.',
       );
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   }
 
   return (
-    <main className="page">
-      <section className="card">
-        <div className="eyebrow">DHARMA ADMIN</div>
-        <h1>관리자 로그인</h1>
-        <p>
-          관리자 기능은 자료 업로드, 구매 내역, 원문 파일 관리에 사용됩니다.
+    <main style={styles.page}>
+      <section style={styles.card}>
+        <div style={styles.brandRow}>
+          <div style={styles.logoMark} aria-hidden="true">D</div>
+          <div>
+            <p style={styles.eyebrow}>DHARMA AI ADMIN</p>
+            <p style={styles.brandName}>다르마(DHARMA) AI</p>
+          </div>
+        </div>
+
+        <h1 style={styles.title}>관리자 로그인</h1>
+        <p style={styles.description}>
+          관리자 전용 페이지입니다. 등록된 비밀번호를 입력해 주세요.
         </p>
 
-        <form onSubmit={handleLogin}>
-          <label>관리자 비밀번호</label>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <label htmlFor="admin-password" style={styles.label}>
+            관리자 비밀번호
+          </label>
           <input
+            id="admin-password"
+            name="password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="관리자 비밀번호 입력"
-            autoComplete="current-password"
+            disabled={submitting}
+            style={styles.input}
+            placeholder="비밀번호 입력"
+            autoFocus
           />
 
-          <button type="submit" disabled={loading}>
-            {loading ? "확인 중..." : "로그인"}
+          {message ? (
+            <p role="alert" style={styles.error}>
+              {message}
+            </p>
+          ) : null}
+
+          <button type="submit" disabled={submitting} style={styles.button}>
+            {submitting ? '확인 중…' : '관리자 로그인'}
           </button>
         </form>
 
-        {message && <div className="message">{message}</div>}
-
-        <a href="/" className="homeLink">홈페이지로 돌아가기</a>
+        <a href="/" style={styles.homeLink}>
+          홈페이지로 돌아가기
+        </a>
       </section>
-
-      <style>{`
-        * {
-          box-sizing: border-box;
-        }
-
-        .page {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 40px;
-          background: linear-gradient(180deg, #ffffff 0%, #f1f7ff 100%);
-          color: #07152f;
-          font-family: Arial, sans-serif;
-        }
-
-        .card {
-          width: 100%;
-          max-width: 520px;
-          padding: 42px;
-          border-radius: 34px;
-          background: white;
-          border: 1px solid #d9e7ff;
-          box-shadow: 0 24px 70px rgba(17, 101, 232, 0.12);
-        }
-
-        .eyebrow {
-          color: #1165e8;
-          font-weight: 950;
-          letter-spacing: 4px;
-          margin-bottom: 16px;
-        }
-
-        h1 {
-          font-size: 46px;
-          margin: 0 0 18px;
-          letter-spacing: -0.05em;
-        }
-
-        p {
-          font-size: 18px;
-          line-height: 1.7;
-          color: #385173;
-        }
-
-        form {
-          margin-top: 28px;
-        }
-
-        label {
-          display: block;
-          font-weight: 900;
-          margin-bottom: 10px;
-        }
-
-        input {
-          width: 100%;
-          padding: 18px 20px;
-          border-radius: 18px;
-          border: 1px solid #d9e7ff;
-          font-size: 17px;
-          outline: none;
-        }
-
-        button {
-          width: 100%;
-          margin-top: 18px;
-          padding: 18px 24px;
-          border: 0;
-          border-radius: 18px;
-          background: #1977f3;
-          color: white;
-          font-size: 18px;
-          font-weight: 950;
-          cursor: pointer;
-        }
-
-        button:disabled {
-          opacity: 0.65;
-          cursor: not-allowed;
-        }
-
-        .message {
-          margin-top: 18px;
-          padding: 16px;
-          border-radius: 16px;
-          background: #fff4e5;
-          color: #7a3d00;
-          font-weight: 800;
-        }
-
-        .homeLink {
-          display: inline-block;
-          margin-top: 22px;
-          color: #1165e8;
-          font-weight: 900;
-          text-decoration: none;
-        }
-      `}</style>
     </main>
   );
 }
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<AdminLoginLoading />}>
+      <AdminLoginForm />
+    </Suspense>
+  );
+}
+
+const styles: Record<string, CSSProperties> = {
+  page: {
+    minHeight: '100vh',
+    display: 'grid',
+    placeItems: 'center',
+    padding: '32px 18px',
+    background:
+      'radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 34%), linear-gradient(145deg, #f8fafc 0%, #eef4ff 100%)',
+    color: '#0f172a',
+  },
+  card: {
+    width: '100%',
+    maxWidth: 460,
+    borderRadius: 24,
+    border: '1px solid rgba(15, 23, 42, 0.09)',
+    background: 'rgba(255, 255, 255, 0.96)',
+    boxShadow: '0 24px 70px rgba(15, 23, 42, 0.14)',
+    padding: '36px 32px',
+  },
+  brandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 28,
+  },
+  logoMark: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    display: 'grid',
+    placeItems: 'center',
+    background: '#0f2f67',
+    color: '#ffffff',
+    fontWeight: 800,
+    fontSize: 22,
+  },
+  eyebrow: {
+    margin: 0,
+    color: '#2563eb',
+    fontSize: 12,
+    fontWeight: 800,
+    letterSpacing: '0.16em',
+  },
+  brandName: {
+    margin: '3px 0 0',
+    fontSize: 14,
+    fontWeight: 700,
+    color: '#334155',
+  },
+  title: {
+    margin: 0,
+    fontSize: 31,
+    lineHeight: 1.25,
+    letterSpacing: '-0.04em',
+  },
+  description: {
+    margin: '12px 0 0',
+    color: '#64748b',
+    fontSize: 15,
+    lineHeight: 1.7,
+  },
+  form: {
+    display: 'grid',
+    gap: 12,
+    marginTop: 28,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: 750,
+    color: '#1e293b',
+  },
+  input: {
+    width: '100%',
+    boxSizing: 'border-box',
+    border: '1px solid #cbd5e1',
+    borderRadius: 13,
+    padding: '14px 15px',
+    fontSize: 16,
+    outline: 'none',
+    background: '#ffffff',
+    color: '#0f172a',
+  },
+  error: {
+    margin: 0,
+    borderRadius: 11,
+    padding: '11px 12px',
+    background: '#fef2f2',
+    color: '#b91c1c',
+    fontSize: 14,
+    lineHeight: 1.5,
+  },
+  button: {
+    border: 0,
+    borderRadius: 13,
+    padding: '14px 16px',
+    background: '#0f2f67',
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 800,
+    cursor: 'pointer',
+  },
+  homeLink: {
+    display: 'block',
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#475569',
+    fontSize: 14,
+    textDecoration: 'none',
+  },
+};
