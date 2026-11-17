@@ -12,3 +12,16 @@ node_modules
 *.backup_*
 DHARMA_AI_*_PG_*.zip
 DHARMA_AI_*_PG_*.sha256
+# Temporary downloads
+*.crdownload
+
+# Local patch archives
+*.zip
+*.sha256
+
+# Local backup files
+*.backup-*
+*.before-*
+
+# One-time classification output
+scripts/unresolved-subjects.txt
