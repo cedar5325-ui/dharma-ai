@@ -295,7 +295,7 @@ export default function HomePage() {
   return (
     <main className="page">
       <header className="header">
-        <strong className="brand">다르마(DHARMA) AI</strong>
+        <strong className="brand">다르마(DHARMA) 탐구보고서</strong>
         <nav className="nav">
           <a href="/">홈</a>
           <a href="/materials">자료 다운로드</a>
@@ -319,10 +319,45 @@ export default function HomePage() {
           교과,도서 연계 심화 탐구 보고서
         </h1>
 
-        <p className="heroText">
-          다르마는 단순 자료 판매가 아니라, 교과 개념에서 출발해 심화 탐구,
-          관련 도서 활동, 느낀점까지 자연스럽게 이어지는 고퀄리티 탐구 보고서 자료를 제공합니다.
-        </p>
+        <div className="heroMessageStack">
+
+          <div className="heroMessageLine heroMessageBlue">
+            <span className="heroMessageIcon">▣</span>
+
+            <span>
+              다르마(DHARMA) 탐구보고서는 무분별한 AI의 활용을 지양합니다.{" "}
+              <span className="heroHighlight heroHighlightBlue">
+                학술자료와 도서를 활용
+              </span>{" "}
+               한 보고서입니다.
+            </span>
+          </div>
+
+          <div className="heroMessageLine heroMessagePurple">
+           <span className="heroMessageIcon">◆</span>
+
+           <span>
+             학종뿐만 아니라, 교과전형에서도 반영되는{" "}
+             <span className="heroHighlight heroHighlightPurple">
+               정성평가
+             </span>
+             를 대비하세요.
+           </span>
+          </div>
+
+          <div className="heroMessageLine heroMessageGreen">
+           <span className="heroMessageIcon">◎</span>
+
+           <span>
+             여러분은{" "}
+             <span className="heroHighlight heroHighlightGreen">
+               내신과 수능 준비에만
+             </span>{" "}
+             전념하세요.
+           </span>
+          </div>
+
+        </div>
 
         <div className="actions">
           <a className="primary" href="/materials">자료 선택하고 다운로드</a>
@@ -745,13 +780,86 @@ export default function HomePage() {
           font-weight: 950;
         }
 
-        .heroText {
-          font-size: 22px;
-          line-height: 1.75;
-          max-width: 980px;
-          margin-top: 30px;
-          color: #243d63;
+        .heroMessageStack {
+          display: grid;
+          gap: 12px;
+          margin: 28px 0 26px;
+          max-width: 1180px;
         }
+
+        .heroMessageLine {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          min-height: 58px;
+          padding: 11px 22px;
+
+          border-radius: 18px;
+
+          font-size: 21px;
+          line-height: 1.55;
+          font-weight: 850;
+          letter-spacing: -0.025em;
+
+          color: #07152f;
+        }
+
+        .heroMessageIcon {
+          flex: 0 0 auto;
+
+          width: 38px;
+          height: 38px;
+
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+
+          font-size: 22px;
+          font-weight: 950;
+        }
+
+        .heroMessageBlue {
+          background: linear-gradient(
+          90deg,
+         #edf6ff 0%,
+         #f8fbff 100%
+       );
+
+         border: 1px solid #bfdcff;
+       }
+
+        .heroMessageBlue .heroMessageIcon {
+          color: #176fe8;
+      }
+
+        .heroMessagePurple {
+          background: linear-gradient(
+          90deg,
+          #f5ebff 0%,
+          #fcf8ff 100%
+        );
+
+          border: 1px solid #d7b4ff;
+      }
+
+        .heroMessagePurple .heroMessageIcon {
+          color: #7623c9;
+      }
+
+        .heroMessageGreen {
+          background: linear-gradient(
+          90deg,
+          #e9fbf7 0%,
+          #f6fffd 100%
+       );
+
+          border: 1px solid #a8e5d8;
+      }
+
+        .heroMessageGreen .heroMessageIcon {
+          color: #078f79;
+      }
 
         .actions {
           display: flex;
@@ -759,7 +867,42 @@ export default function HomePage() {
           flex-wrap: wrap;
           margin-top: 34px;
         }
+        
+        .heroHighlight {
+  display: inline-block;
 
+  margin: 0 3px;
+  padding: 2px 12px 4px;
+
+  border-radius: 11px;
+
+  font-size: 1.22em;
+  line-height: 1.25;
+  font-weight: 1000;
+
+  white-space: nowrap;
+}
+
+.heroHighlightBlue {
+  background: #176fe8;
+  color: #ffe84a;
+
+  box-shadow: 0 7px 18px rgba(23, 111, 232, 0.22);
+}
+
+.heroHighlightPurple {
+  background: #7918c7;
+  color: #ffe755;
+
+  box-shadow: 0 7px 18px rgba(121, 24, 199, 0.22);
+}
+
+.heroHighlightGreen {
+  background: #078f79;
+  color: #ffe44d;
+
+  box-shadow: 0 7px 18px rgba(7, 143, 121, 0.22);
+}
         .primary,
         .ghost {
           display: inline-flex;
@@ -1193,6 +1336,35 @@ export default function HomePage() {
     align-items: flex-start;
     gap: 12px;
   }
+  
+  .heroMessageStack {
+  gap: 9px;
+  margin: 20px 0 22px;
+}
+
+.heroMessageLine {
+  align-items: flex-start;
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.heroMessageIcon {
+  width: 28px;
+  height: 28px;
+  font-size: 17px;
+}
+
+.heroHighlight {
+  padding: 2px 7px 3px;
+  border-radius: 8px;
+
+  font-size: 1.15em;
+  white-space: normal;
+}
 
   .brand {
     font-size: 18px;
