@@ -84,7 +84,73 @@ function DigitalUpgradeClock() {
     </aside>
   );
 }
+const REPORT_SHOWCASES = [
+  {
+    subject: "미적분Ⅰ",
+    title: "휴대폰 배터리 충전 곡선",
+    subtitle: "실제 충전 데이터를 미분으로 분석하다",
+    images: [
+      "/sample-reports/battery-1.png",
+    ],
+    href: "/materials?subject=수학",
+    tone: "blue",
+  },
 
+  {
+    subject: "생명과학",
+    title: "세균의 세포벽 구조에 따른 엔도리신의 작용 차이",
+    subtitle: "세포 구조에서 항생제 대체 기술까지",
+    images: [
+      "/sample-reports/endolysin-1.png",
+    ],
+    href: "/materials?subject=생명과학",
+    tone: "green",
+  },
+
+  {
+    subject: "기하",
+    title: "GPS 위치 결정의 공간좌표 원리와 철새 이동 경로 분석",
+    subtitle: "공간좌표와 벡터를 실제 위치추적에 적용하다",
+    images: [
+      "/sample-reports/gps-1.png",
+    ],
+    href: "/materials?subject=수학",
+    tone: "purple",
+  },
+
+  {
+    subject: "물리학 실험",
+    title: "도체의 전류 순환 경로와 와전류 제동 효과",
+    subtitle: "전자기 유도를 실험으로 검증하다",
+    images: [
+      "/sample-reports/eddy-1.png",
+    ],
+    href: "/materials?subject=물리",
+    tone: "orange",
+  },
+
+  {
+    subject: "화학",
+    title: "활성산소에 의한 세포막·DNA 손상과 항산화 작용",
+    subtitle: "산화·환원 개념을 생명현상으로 확장하다",
+    images: [
+      "/sample-reports/ros-1.png",
+    ],
+    href: "/materials?subject=화학",
+    tone: "red",
+  },
+
+  {
+    subject: "컴퓨터 시스템",
+    title: "오버플로우 검출 회로와 불 대수",
+    subtitle: "수학적 논리에서 실제 디지털 회로까지",
+    images: [
+      "/sample-reports/overflow-1.png",
+    ],
+    href: "/materials?subject=정보",
+    tone: "indigo",
+  },
+];
 export default function HomePage() {
   const [homeSubjects, setHomeSubjects] = useState<
     Array<{ subject: string; count: number }>
@@ -198,11 +264,128 @@ export default function HomePage() {
               href={`/materials?subject=${encodeURIComponent(item.subject)}`}
             >
               <strong>{item.subject}</strong>
-              <span>{item.count.toLocaleString("ko-KR")}개</span>
+          
             </a>
           ))}
         </div>
       </section>
+      <section className="showcaseSection">
+  <div className="showcaseHead">
+    <div>
+      <div className="eyebrow">DHARMA REPORT PREVIEW</div>
+
+      <h2>
+        교과에서 시작해
+        <br />
+        <span>심화탐구로 확장되는 과정</span>
+      </h2>
+
+      <p>
+        실제 탐구보고서가 어떤 흐름으로 완성되는지
+        카드뉴스 형태로 미리 확인해보세요.
+      </p>
+    </div>
+
+    <a href="/materials" className="showcaseAll">
+      전체 자료 보기 →
+    </a>
+  </div>
+
+  <div className="showcaseList">
+    {REPORT_SHOWCASES.map((report, reportIndex) => (
+      <article
+        key={report.title}
+        className={`showcaseCard ${report.tone}`}
+      >
+        <div className="showcaseNumber">
+          REPORT {String(reportIndex + 1).padStart(2, "0")}
+        </div>
+
+        <div className="showcaseImages">
+          {report.images.map((src, imageIndex) => (
+            <div className="showcaseImageBox" key={src}>
+              <div className="showcaseImageNumber">
+                {imageIndex + 1}
+              </div>
+
+              <img
+                src={src}
+                alt={`${report.title} 이미지 ${imageIndex + 1}`}
+                className="showcaseImage"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="showcaseBody">
+          <div className="showcaseSubject">
+            {report.subject}
+          </div>
+
+          <h3>{report.title}</h3>
+
+          <p className="showcaseSubtitle">
+            {report.subtitle}
+          </p>
+
+          <div className="theoryFlow">
+            <div className="flowStep">
+              <div className="flowTop">
+                <span className="flowNumber">1</span>
+                <strong>고등학교 교과과정</strong>
+              </div>
+              <p>
+                교과 핵심 개념에서 탐구 질문을 출발시킵니다.
+              </p>
+            </div>
+
+            <div className="flowStep">
+              <div className="flowTop">
+                <span className="flowNumber">2</span>
+                <strong>탐구 내용</strong>
+              </div>
+              <p>
+                개념을 분석·실험·모델링 과정으로 구체화합니다.
+              </p>
+            </div>
+
+            <div className="flowStep">
+              <div className="flowTop">
+                <span className="flowNumber">3</span>
+                <strong>실생활 적용</strong>
+              </div>
+              <p>
+                실제 현상과 기술·의학·생활 문제에 연결합니다.
+              </p>
+            </div>
+
+            <div className="flowStep">
+              <div className="flowTop">
+                <span className="flowNumber">4</span>
+                <strong>확장</strong>
+              </div>
+              <p>
+                후속 질문과 심화 주제로 탐구를 확장합니다.
+              </p>
+            </div>
+          </div>
+
+          <div className="showcaseBottom">
+            <div className="showcaseMessage">
+              교과 개념이 실제 탐구보고서로
+              <strong> 어떻게 확장되는지 확인하세요.</strong>
+            </div>
+
+            <a href={report.href} className="showcaseCTA">
+              실제 자료 확인하기
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
       <section className="pricingBand" aria-labelledby="one-time-pricing-title">
         <div className="pricingIntro">
           <small>ONE-TIME PAYMENT ONLY</small>
@@ -639,10 +822,306 @@ export default function HomePage() {
   font-weight: 950;
 }
 
-.homeSubjectChip span {
-  color:#1977f3;
+
+  .showcaseSection {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 72px 6vw 80px;
+}
+
+.showcaseHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 28px;
+  margin-bottom: 38px;
+}
+
+.showcaseHead h2 {
+  margin: 10px 0 16px;
+  color: #07152f;
+  font-size: clamp(40px, 4.5vw, 66px);
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+}
+
+.showcaseHead h2 span {
+  color: #1977f3;
+}
+
+.showcaseHead p {
+  margin: 0;
+  color: #586982;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.showcaseAll {
+  flex-shrink: 0;
+  padding: 14px 19px;
+  border-radius: 14px;
+  background: #07152f;
+  color: white;
+  text-decoration: none;
+  font-weight: 950;
+}
+
+.showcaseList {
+  display: grid;
+  gap: 32px;
+}
+
+.showcaseCard {
+  --accent: #1977f3;
+  --soft: #eef6ff;
+
+  overflow: hidden;
+  padding: 28px;
+  border: 1px solid #dce8f6;
+  border-radius: 30px;
+  background: white;
+  box-shadow: 0 18px 60px rgba(17, 54, 101, 0.09);
+}
+
+.showcaseCard.blue {
+  --accent: #1977f3;
+  --soft: #eaf4ff;
+}
+
+.showcaseCard.green {
+  --accent: #08a779;
+  --soft: #e8faf3;
+}
+
+.showcaseCard.purple {
+  --accent: #7456d8;
+  --soft: #f1edff;
+}
+
+.showcaseCard.orange {
+  --accent: #ef7a24;
+  --soft: #fff2e7;
+}
+
+.showcaseCard.red {
+  --accent: #e94a66;
+  --soft: #fff0f3;
+}
+
+.showcaseCard.indigo {
+  --accent: #4357d6;
+  --soft: #eef0ff;
+}
+
+.showcaseNumber {
+  margin-bottom: 18px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+}
+
+.showcaseImages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.showcaseImageBox {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  background: var(--soft);
+}
+
+.showcaseImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.showcaseImageNumber {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: rgba(7, 21, 47, 0.88);
+  color: white;
+
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.showcaseBody {
+  padding-top: 28px;
+}
+
+.showcaseSubject {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  background: var(--soft);
+  color: var(--accent);
+
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 950;
+}
+
+.showcaseBody h3 {
+  max-width: 1050px;
+  margin: 0 0 10px;
+  color: #07152f;
+
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+.showcaseSubtitle {
+  margin: 0 0 26px;
+  color: #5a6c85;
+  font-size: 17px;
+}
+
+.theoryFlow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.flowStep {
+  min-height: 160px;
+  padding: 18px;
+
+  border-radius: 18px;
+  background: var(--soft);
+}
+
+.flowTop {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 13px;
+  color: var(--accent);
+}
+
+.flowNumber {
+  width: 26px;
+  height: 26px;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+
+  font-size: 11px;
+  font-weight: 1000;
+}
+
+.flowTop strong {
+  font-size: 14px;
+}
+
+.flowStep p {
+  margin: 0;
+  color: #263952;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.flowArrow {
+  display: none;
+}
+
+.showcaseBottom {
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top: 1px solid #e2eaf5;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.showcaseMessage {
+  color: #4f6077;
+  font-size: 15px;
+}
+
+.showcaseMessage strong {
+  color: #07152f;
+}
+
+.showcaseCTA {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 18px;
+
+  border-radius: 14px;
+
+  background: var(--accent);
+  color: white;
+
+  text-decoration: none;
+  font-weight: 1000;
+}
+
+.showcaseCTA span {
+  font-size: 20px;
+}
+
+@media (max-width: 900px) {
+  .showcaseHead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .showcaseImages {
+    grid-template-columns: 1fr;
+  }
+
+  .showcaseImageBox {
+    aspect-ratio: 16 / 10;
+  }
+
+  .theoryFlow {
+    grid-template-columns: 1fr;
+  }
+
+  .flowArrow {
+    display: block;
+    margin-top: 14px;
+    color: var(--accent);
+    font-weight: 1000;
+  }
+
+  .showcaseBottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
         .pricingBand {
           max-width: 1440px;
