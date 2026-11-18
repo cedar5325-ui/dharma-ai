@@ -922,24 +922,27 @@ export default function HomePage() {
 }
 
 .showcaseImages {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 12px;
 }
 
 .showcaseImageBox {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 4 / 5;
+  width: min(100%, 760px);
+  aspect-ratio: auto;
   border-radius: 20px;
   background: var(--soft);
 }
 
 .showcaseImage {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
+  margin: 0 auto;
 }
 
 .showcaseImageNumber {
