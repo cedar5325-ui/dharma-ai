@@ -89,6 +89,24 @@ const REPORT_SHOWCASES = [
     subject: "미적분Ⅰ",
     title: "휴대폰 배터리 충전 곡선",
     subtitle: "실제 충전 데이터를 미분으로 분석하다",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "미적분Ⅰ의 함수, 도함수, 순간변화율과 함수의 증가·감소 개념을 활용합니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "휴대폰 충전 데이터를 함수로 모델링하고, 도함수로 충전 속도가 가장 빠른 시점과 이후 속도가 감소하는 구간을 분석합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "배터리 잔량과 충전 속도의 관계를 통해 효율적인 충전 시간과 적정 충전 범위를 해석합니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "유선·무선 충전의 충전 곡선과 배터리 온도 변화를 비교하여 충전 방식에 따른 효율 차이로 확장합니다.",
+  },
+],
     images: [
       "/sample-reports/battery-1.png",
     ],
@@ -100,6 +118,24 @@ const REPORT_SHOWCASES = [
     subject: "생명과학",
     title: "세균의 세포벽 구조에 따른 엔도리신의 작용 차이",
     subtitle: "세포 구조에서 항생제 대체 기술까지",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "생명과학의 세포 구조, 세포막과 세포벽, 효소의 기질특이성 개념과 연결됩니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "그람양성균과 그람음성균의 세포벽·외막 구조를 비교하고, 구조 차이가 엔도리신의 접근성과 항균 작용에 미치는 영향을 분석합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "항생제 내성균에 대응하기 위한 박테리오파지 유래 항균 효소의 활용 가능성을 살펴봅니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "그람음성균의 외막 장벽을 극복하기 위한 엔도리신 개량과 온도·pH 조건에 따른 활성 변화 탐구로 확장합니다.",
+  },
+],
     images: [
       "/sample-reports/endolysin-1.png",
     ],
@@ -111,6 +147,24 @@ const REPORT_SHOWCASES = [
     subject: "기하",
     title: "GPS 위치 결정의 공간좌표 원리와 철새 이동 경로 분석",
     subtitle: "공간좌표와 벡터를 실제 위치추적에 적용하다",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "기하의 공간좌표, 두 점 사이 거리, 구의 방정식, 벡터와 내적 개념을 활용합니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "여러 위성과의 거리 조건으로 수신기의 위치를 계산하고, 위치좌표와 벡터를 이용해 철새의 이동 거리·방향·속력을 분석합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "GPS 위치결정, 내비게이션, 야생동물 위치추적과 생태 연구에 수학적 원리가 어떻게 활용되는지 확인합니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "실제 철새 이동 데이터에 기후·먹이·서식지 정보를 결합해 이동 패턴과 환경 요인의 관계를 분석하는 방향으로 확장합니다.",
+  },
+],
     images: [
       "/sample-reports/gps-1.png",
     ],
@@ -122,6 +176,24 @@ const REPORT_SHOWCASES = [
     subject: "물리학 실험",
     title: "도체의 전류 순환 경로와 와전류 제동 효과",
     subtitle: "전자기 유도를 실험으로 검증하다",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "물리학의 전자기 유도, 패러데이 법칙, 렌츠 법칙, 뉴턴 운동 법칙과 에너지 보존 개념을 활용합니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "구리·알루미늄·아크릴관과 절개 여부를 변인으로 설정해 자석의 낙하 속력과 가속도를 비교하고 와전류 제동 효과를 분석합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "고속열차·엘리베이터 등에서 활용되는 비접촉 전자기 제동과 자기 제동 기술의 원리를 이해할 수 있습니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "도체의 전기전도도, 두께, 전류 순환 경로와 제동력의 관계 및 에너지 전환 과정으로 실험을 확장할 수 있습니다.",
+  },
+],
     images: [
       "/sample-reports/eddy-1.png",
     ],
@@ -133,6 +205,24 @@ const REPORT_SHOWCASES = [
     subject: "화학",
     title: "활성산소에 의한 세포막·DNA 손상과 항산화 작용",
     subtitle: "산화·환원 개념을 생명현상으로 확장하다",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "화학의 산화·환원 반응, 전자 이동, 산화수와 반응성 개념을 생명현상과 연결합니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "활성산소가 세포막 지질과 DNA를 산화시키는 과정과 비타민 C 등 항산화 물질이 전자를 제공해 이를 조절하는 원리를 분석합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "노화, 세포 손상, 질환과 항산화 작용을 화학적 산화·환원 반응의 관점에서 이해합니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "활성산소의 생성·제거 균형, 항산화 효소와 생체 항상성, 질환 발생과의 관계를 더 깊게 탐구할 수 있습니다.",
+  },
+],
     images: [
       "/sample-reports/ros-1.png",
     ],
@@ -144,6 +234,24 @@ const REPORT_SHOWCASES = [
     subject: "컴퓨터 시스템",
     title: "오버플로우 검출 회로와 불 대수",
     subtitle: "수학적 논리에서 실제 디지털 회로까지",
+    flow: [
+  {
+    label: "고등학교 교과과정",
+    text: "컴퓨터 시스템의 이진수 표현, 논리게이트, 가산기, 조합논리회로와 불 대수 개념을 활용합니다.",
+  },
+  {
+    label: "탐구 내용",
+    text: "반가산기·전가산기·리플 캐리 가산기의 구조를 바탕으로 오버플로우 조건을 분석하고 불 대수로 검출 논리식을 간소화합니다.",
+  },
+  {
+    label: "실생활 적용",
+    text: "CPU와 디지털 회로에서 연산 결과가 표현 범위를 벗어났는지 검출하고 오류를 처리하는 원리와 연결됩니다.",
+  },
+  {
+    label: "후속질문 · 확장",
+    text: "XOR 기반 검출 회로, 비트 폭 증가, 캐리 전파 지연과 고속 가산기 설계 문제로 확장할 수 있습니다.",
+  },
+],
     images: [
       "/sample-reports/overflow-1.png",
     ],
@@ -329,41 +437,25 @@ export default function HomePage() {
           </p>
 
           <div className="theoryFlow">
-            <div className="flowStep">
-              <div className="flowTop">
-                <span className="flowNumber">1</span>
-                <strong>고등학교 교과과정</strong>
-              </div>
-              <p>
-                교과 핵심 개념에서 탐구 질문을 출발시킵니다.
-              </p>
-            </div>
+  {report.flow.map((step, index) => (
+    <div className="flowStep" key={step.label}>
+      <div className="flowTop">
+        <span className="flowNumber">
+          {index + 1}
+        </span>
 
-            <div className="flowStep">
-              <div className="flowTop">
-                <span className="flowNumber">2</span>
-                <strong>탐구 내용</strong>
-              </div>
-              <p>
-                개념을 분석·실험·모델링 과정으로 구체화합니다.
-              </p>
-            </div>
+        <strong>{step.label}</strong>
+      </div>
 
-            <div className="flowStep">
-              <div className="flowTop">
-                <span className="flowNumber">3</span>
-                <strong>실생활 적용</strong>
-              </div>
-              <p>
-                실제 현상과 기술·의학·생활 문제에 연결합니다.
-              </p>
-            </div>
+      <p>{step.text}</p>
 
-            <div className="flowStep">
-              <div className="flowTop">
-                <span className="flowNumber">4</span>
-                <strong>확장</strong>
-              </div>
+      {index < report.flow.length - 1 && (
+        <div className="flowArrow">↓</div>
+      )}
+    </div>
+  ))}
+  </div>
+</div>
               <p>
                 후속 질문과 심화 주제로 탐구를 확장합니다.
               </p>
