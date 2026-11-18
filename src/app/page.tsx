@@ -1097,14 +1097,97 @@ export default function HomePage() {
 }
 
 @media (max-width: 900px) {
+  .header {
+    padding: 14px 18px;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .brand {
+    font-size: 18px;
+    line-height: 1.25;
+    max-width: 150px;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px 14px;
+    font-size: 14px;
+  }
+
+  .showcaseSection {
+    padding: 34px 16px 48px;
+  }
+
+  .showcaseCard {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .showcaseImages {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .showcaseImageBox {
+  width: 92%;
+  max-width: 520px;
+  aspect-ratio: auto;
+  margin: 0 auto;
+  border-radius: 16px;
+}
+
+.showcaseImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+  .showcaseBody {
+    padding-top: 20px;
+  }
+
+  .showcaseBody h3 {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+
+  .showcaseSubtitle {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .theoryFlow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .flowStep {
+    min-height: auto;
+    padding: 16px;
+  }
+
+  .showcaseBottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .showcaseCTA {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
   .showcaseHead {
     align-items: flex-start;
     flex-direction: column;
   }
 
-  .showcaseImages {
-    grid-template-columns: 1fr;
-  }
+
 
   .showcaseImageBox {
     aspect-ratio: 16 / 10;
