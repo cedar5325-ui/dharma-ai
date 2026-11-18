@@ -1097,7 +1097,7 @@ export default function HomePage() {
 }
 
 .flowStep {
-  min-height: 210px;
+  min-height: 220px;
   height: auto;
   padding: 20px;
   border-radius: 18px;
@@ -1135,8 +1135,9 @@ export default function HomePage() {
 .flowStep p {
   margin: 0;
   color: #263952;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 15px;
+  line-height: 1.75;
+  word-break: keep-all;
 }
 
 .flowArrow {
@@ -1260,8 +1261,9 @@ export default function HomePage() {
 
   .flowStep {
     min-height: auto;
-    padding: 16px;
+    height: auto;
   }
+}
 
   .showcaseBottom {
     flex-direction: column;
@@ -1299,6 +1301,57 @@ export default function HomePage() {
   .showcaseBottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+  .showcaseImages {
+  display: block !important;
+  width: 100% !important;
+}
+
+.showcaseImageBox {
+  position: relative !important;
+  width: min(100%, 980px) !important;
+  max-width: 980px !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+  border-radius: 20px;
+}
+
+.showcaseImage {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center top !important;
+  margin: 0 auto !important;
+}
+
+@media (max-width: 900px) {
+  .showcaseImages {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .showcaseImageBox {
+    width: 96% !important;
+    max-width: 560px !important;
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+  }
+
+  .showcaseImage {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
   }
 }
         .pricingBand {
