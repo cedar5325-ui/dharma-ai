@@ -437,31 +437,24 @@ export default function HomePage() {
           </p>
 
           <div className="theoryFlow">
-  {report.flow.map((step, index) => (
-    <div className="flowStep" key={step.label}>
-      <div className="flowTop">
-        <span className="flowNumber">
-          {index + 1}
-        </span>
+           {report.flow.map((step, index) => (
+            <div className="flowStep" key={step.label}>
+             <div className="flowTop">
+              <span className="flowNumber">
+               {index + 1}
+              </span>
 
-        <strong>{step.label}</strong>
-      </div>
-
-      <p>{step.text}</p>
-
-      {index < report.flow.length - 1 && (
-        <div className="flowArrow">↓</div>
-      )}
-    </div>
-  ))}
-  </div>
-</div>
-              <p>
-                후속 질문과 심화 주제로 탐구를 확장합니다.
-              </p>
+              <strong>{step.label}</strong>
             </div>
-          </div>
 
+            <p>{step.text}</p>
+
+            {index < report.flow.length - 1 && (
+             <div className="flowArrow">↓</div>
+            )}
+          </div>
+          ))}
+          </div>
           <div className="showcaseBottom">
             <div className="showcaseMessage">
               교과 개념이 실제 탐구보고서로
