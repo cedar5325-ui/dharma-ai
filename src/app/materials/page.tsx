@@ -14,6 +14,7 @@ function formatBytes(value: number | null | undefined) {
 export default function MaterialsPage() {
   const [subject, setSubject] = useState("전체");
   const [subjects, setSubjects] = useState<string[]>([]);
+  const [initialized, setInitialized] = useState(false);
   const [materials, setMaterials] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
@@ -35,7 +36,16 @@ export default function MaterialsPage() {
         ? data.subjects.map((item: { subject: string }) => item.subject)
         : [];
 
-      setSubjects(["전체", ...subjectNames]);
+      const mergedSubjects = subjectNames.filter(
+        (item: string) =>
+          !["동아리", "자율", "진로", "자율, 진로"].includes(item)
+      );
+
+      setSubjects([
+        "전체",
+        "동아리, 자율, 진로",
+        ...mergedSubjects,
+      ]);
     } catch (error) {
       console.error("과목 목록 조회 오류:", error);
       setSubjects(["전체"]);
@@ -47,7 +57,13 @@ export default function MaterialsPage() {
 
     try {
       const params = new URLSearchParams();
-      if (subject && subject !== "전체") params.set("subject", subject);
+      if (subject && subject !== "전체") {
+        if (subject === "동아리, 자율, 진로") {
+          params.set("subjectGroup", "activity");
+        } else {
+          params.set("subject", subject);
+        }
+      }
       
 
       const response = await fetch("/api/materials?" + params.toString() + "&t=" + Date.now(), {
@@ -78,12 +94,19 @@ export default function MaterialsPage() {
 
   if (initialSubject) {
     setSubject(initialSubject);
+  } else {
+    setSubject("전체");
   }
+
+  setInitialized(true);
 }, []);
+
   useEffect(() => {
-    loadMaterials();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subject]);
+  if (!initialized) return;
+
+  loadMaterials();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [subject, initialized]);
 
   return (
     <main className="page">

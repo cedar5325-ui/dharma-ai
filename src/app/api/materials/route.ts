@@ -54,7 +54,8 @@ export async function GET(request: NextRequest) {
 
     const query = request.nextUrl.searchParams.get("query") || "";
     const subject = request.nextUrl.searchParams.get("subject") || "";
-
+    const subjectGroup =
+      request.nextUrl.searchParams.get("subjectGroup") || "";
     const cleanQuery = query.trim();
     const cleanSubject = subject.trim();
 
@@ -80,17 +81,22 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      if (
-        includeSearch &&
-        cleanSubject &&
-        cleanSubject !== "전체"
-      ) {
-        params.set(
-          "subject",
-          `ilike.*${cleanSubject}*`
-        );
+      if (includeSearch) {
+        if (subjectGroup === "activity") {
+          params.set(
+            "subject",
+            'in.("동아리","자율","진로","자율, 진로")'
+          );
+        } else if (
+          cleanSubject &&
+          cleanSubject !== "전체"
+        ) {
+          params.set(
+            "subject",
+            `ilike.*${cleanSubject}*`
+          );
+        }
       }
-
       return params;
     }
 
