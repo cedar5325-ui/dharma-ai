@@ -279,11 +279,31 @@ export default function HomePage() {
 
         const data = await response.json();
 
-        setHomeSubjects(
-          Array.isArray(data.subjects)
-            ? data.subjects
-            : []
+        const rawSubjects = Array.isArray(data.subjects)
+          ? data.subjects
+          : [];
+
+        const activityCount = rawSubjects
+          .filter((item: { subject: string; count: number }) =>
+            ["동아리", "자율", "진로", "자율, 진로"].includes(item.subject)
+          )
+          .reduce(
+            (sum: number, item: { count: number }) => sum + item.count,
+            0
+          );
+
+        const filteredSubjects = rawSubjects.filter(
+          (item: { subject: string; count: number }) =>
+            !["동아리", "자율", "진로", "자율, 진로"].includes(item.subject)
         );
+
+        setHomeSubjects([
+          {
+            subject: "동아리, 자율, 진로",
+            count: activityCount,
+          },
+          ...filteredSubjects,
+        ]);
       } catch (error) {
         console.error("홈페이지 과목 목록 조회 오류:", error);
       }
@@ -405,7 +425,11 @@ export default function HomePage() {
             <a
               key={item.subject}
               className="homeSubjectChip"
-              href={`/materials?subject=${encodeURIComponent(item.subject)}`}
+              href={
+                item.subject === "동아리, 자율, 진로"
+                  ? "/materials?subject=동아리%2C%20자율%2C%20진로"
+                  : `/materials?subject=${encodeURIComponent(item.subject)}`
+              }
             >
               <strong>{item.subject}</strong>
           
