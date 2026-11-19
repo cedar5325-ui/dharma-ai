@@ -23,7 +23,7 @@ export async function GET() {
     }
 
     const subjectMap = new Map<string, number>();
-
+    let totalRows = 0;
     const PAGE_SIZE = 1000;
     let from = 0;
 
@@ -50,20 +50,25 @@ export async function GET() {
       }
 
       const rows = await response.json();
-
+      totalRows += rows.length;
       if (!Array.isArray(rows)) {
         break;
       }
 
       for (const row of rows) {
-        const subject = String(row?.subject || "").trim();
+        const subjects = String(row?.subject || "")
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean);
 
-        if (!subject) continue;
+      if (subjects.length === 0) continue;
 
+      for (const subject of subjects) {
         subjectMap.set(
           subject,
           (subjectMap.get(subject) || 0) + 1
         );
+      }
       }
 
       if (rows.length < PAGE_SIZE) {
@@ -82,10 +87,7 @@ export async function GET() {
         a.subject.localeCompare(b.subject, "ko")
       );
 
-    const total = Array.from(subjectMap.values()).reduce(
-      (sum, count) => sum + count,
-      0
-    );
+    const total = totalRows;
 
     return NextResponse.json({
       ok: true,
