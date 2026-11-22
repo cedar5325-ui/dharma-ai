@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
         if (subjectGroup === "activity") {
           params.set(
             "subject",
-            'in.("동아리","자율","진로","자율, 진로")'
+            "ilike(any).{*동아리*,*자율*,*진로*}"
           );
         } else if (
           cleanSubject &&
