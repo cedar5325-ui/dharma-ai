@@ -98,6 +98,9 @@ const SUBJECT_ALIASES = new Map([
   ["사회", "사회문제탐구"],
   ["통합사회", "통합사회"],
   ["공통사회", "통합사회"],
+  ["음악*감상과 비평", "음악"],
+  ["음악감상과 비평", "음악"],
+  ["음악 감상과 비평", "음악"],
 
   ["생명윤리", "윤리와사상"],
   ["약학", "진로"],
@@ -119,7 +122,8 @@ function extractSubjects(fileName = "") {
 
   // 파일명 앞부분의 연속된 교과/활동명만 읽음
   for (const part of parts) {
-    const normalized = SUBJECT_ALIASES.get(part);
+    const cleanedPart = part.replace(/\*/g, "").trim();
+    const normalized = SUBJECT_ALIASES.get(cleanedPart);
 
     if (!normalized) {
       break;
