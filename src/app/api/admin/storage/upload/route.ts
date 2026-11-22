@@ -112,8 +112,43 @@ function inferSubject(name: string) {
   if (["수학", "공통수학", "수열", "순열", "조합", "함수", "기하", "벡터", "모멘트"].some((w) => n.includes(normalize(w)))) return "수학";
   if (["국어", "문학", "독서", "화법", "작문"].some((w) => n.includes(normalize(w)))) return "국어";
   if (["영어", "english"].some((w) => n.includes(normalize(w)))) return "영어";
+  if (["음악", "음악감상과비평", "감상과비평"].some((w) => n.includes(normalize(w)))) return "음악";
   if (["정보", "인공지능", "ai", "알고리즘", "데이터"].some((w) => n.includes(normalize(w)))) return "정보";
+  
+  if (
+  ["물리", "역학", "전자기", "전기", "자기", "파동", "빛", "광학", "운동", "힘", "에너지", "뉴턴", "양자"].some((w) =>
+    n.includes(normalize(w))
+  )
+)
+  return "물리";
 
+  if (
+  ["지구과학", "지질", "지구", "대기", "기상", "날씨", "해양", "천문", "우주", "별", "행성", "지진", "화산", "판구조론"].some((w) =>
+    n.includes(normalize(w))
+  )
+)
+  return "지구과학";
+
+  if (
+  ["음악", "작곡", "화성", "음계", "리듬", "선율", "악기", "국악", "클래식"].some((w) =>
+    n.includes(normalize(w))
+  )
+)
+  return "음악";
+
+  if (
+  ["미술", "회화", "조형", "디자인", "색채", "미학", "조각", "드로잉", "시각예술"].some((w) =>
+    n.includes(normalize(w))
+  )
+)
+  return "미술";
+
+  if (
+  ["체육", "스포츠", "운동역학", "운동생리", "체력", "건강체육", "육상", "축구", "농구", "배구"].some((w) =>
+    n.includes(normalize(w))
+  )
+)
+  return "체육";
   return "분류 대기";
 }
 
