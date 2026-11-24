@@ -25,3 +25,10 @@ DHARMA_AI_*_PG_*.sha256
 
 # One-time classification output
 scripts/unresolved-subjects.txt
+
+# Local maintenance scripts
+scripts/find-beethoven.mjs
+scripts/repair-info-subjects.mjs
+scripts/repair-math-subjects.mjs
+scripts/review-info-subjects.mjs
+scripts/review-math-subjects.mjs
